@@ -119,3 +119,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+.idea
+data
+results
