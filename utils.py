@@ -11,7 +11,7 @@ from random import randint
 
 
 def load_data():
-    return pd.read_csv('../data/data_train.csv',
+    return pd.read_csv('data/data_train.csv',
                        sep=',',
                        names=['user_id', 'item_id', 'rating'],
                        header=0,
@@ -21,7 +21,7 @@ def load_data():
 
 
 def load_users():
-    return pd.read_csv('../data/data_target_users_test.csv',
+    return pd.read_csv('data/data_target_users_test.csv',
                        sep=',',
                        names=['user_id'],
                        header=0,
@@ -179,7 +179,7 @@ def prepare_submission(ratings: pd.DataFrame, users_to_recommend: np.array, urm_
 
 
 def write_submission(submissions):
-    with open('../data/results.csv', "w+") as f:
+    with open('data/results.csv', "w+") as f:
         f.write("user_id,item_list\n")
         for user_id, items in submissions.items():
             f.write(f"{user_id},{' '.join([str(item) for item in items])}\n")

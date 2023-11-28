@@ -123,3 +123,4 @@ ENV/
 .idea
 data
 results
+result_experiments
