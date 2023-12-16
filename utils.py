@@ -10,13 +10,18 @@ import numpy as np
 from random import randint
 
 
+def get_database_url():
+    with open('data/database_url.txt', 'r') as f:
+        return f.read()
+
+
 def load_data():
     return pd.read_csv('data/data_train.csv',
                        sep=',',
                        names=['user_id', 'item_id', 'rating'],
                        header=0,
-                       dtype={'user_id': np.int32,
-                              'item_id': np.int32,
+                       dtype={'user_id': int,
+                              'item_id': int,
                               'rating': np.double})
 
 
@@ -25,7 +30,7 @@ def load_users():
                        sep=',',
                        names=['user_id'],
                        header=0,
-                       dtype={'user_id': np.int32})['user_id'].to_numpy()
+                       dtype={'user_id': int})['user_id'].to_numpy()
 
 
 def preprocess_data(data: pd.DataFrame):
@@ -98,7 +103,7 @@ def precision(recommendations: np.array, relevant_items: np.array) -> float:
 def mean_average_precision(recommendations: np.array, relevant_items: np.array) -> float:
     is_relevant = np.in1d(recommendations, relevant_items, assume_unique=True)
 
-    precision_at_k = is_relevant * np.cumsum(is_relevant, dtype=np.float32) / (1 + np.arange(is_relevant.shape[0]))
+    precision_at_k = is_relevant * np.cumsum(is_relevant, dtype=float) / (1 + np.arange(is_relevant.shape[0]))
 
     map_score = np.sum(precision_at_k) / np.min([relevant_items.shape[0], is_relevant.shape[0]])
 
@@ -132,10 +137,8 @@ def evaluator(recommender: object, data_train: sp.csr_matrix, data_test: sp.csr_
             num_users_skipped += 1
             continue
 
-        recommendations = recommender.recommend(user_id=user_id,
-                                                at=recommendation_length,
-                                                urm_train=data_train,
-                                                remove_seen=True)
+        recommendations = np.array(recommender.recommend(user_id,
+                                                cutoff=recommendation_length))
 
         accum_precision += precision(recommendations, relevant_items)
         accum_recall += recall(recommendations, relevant_items)
@@ -164,10 +167,8 @@ def prepare_submission(ratings: pd.DataFrame, users_to_recommend: np.array, urm_
         user_id = row.user_id
         mapped_user_id = row.mapped_user_id
 
-        recommendations = recommender.recommend(user_id=mapped_user_id,
-                                                urm_train=urm_train,
-                                                at=recommendation_length,
-                                                remove_seen=True)
+        recommendations = np.array(recommender.recommend(mapped_user_id,
+                                                cutoff=recommendation_length))
 
         submission[user_id] = [mapping_to_item_id[item_id] for item_id in recommendations]
     
