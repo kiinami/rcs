@@ -1,0 +1,8 @@
+name: RecSysFramework
+channels:
+  - defaults
+dependencies:
+  - anaconda
+  - python=3.8
+  - cudnn
+prefix: /home/kinami/.conda/envs/RecSysFramework
