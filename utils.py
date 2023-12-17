@@ -8,6 +8,8 @@ from sklearn.model_selection import train_test_split
 import scipy.sparse as sp
 import numpy as np
 from random import randint
+import csv
+from Recommenders.NonPersonalizedRecommender import TopPop
 
 
 def get_database_url():
@@ -100,6 +102,7 @@ def precision(recommendations: np.array, relevant_items: np.array) -> float:
 
     return precision_score
 
+
 def mean_average_precision(recommendations: np.array, relevant_items: np.array) -> float:
     is_relevant = np.in1d(recommendations, relevant_items, assume_unique=True)
 
@@ -184,3 +187,74 @@ def write_submission(submissions):
         f.write("user_id,item_list\n")
         for user_id, items in submissions.items():
             f.write(f"{user_id},{' '.join([str(item) for item in items])}\n")
+
+
+# New version of the functions
+
+
+def load_data2():
+    with open('data/data_train.csv', newline='') as f:
+        reader = csv.reader(f)
+        reader.__next__()
+        data_raw = [(int(u), int(i), float(r)) for u, i, r in reader]
+    
+    usermap = {}
+    for u, _, _ in data_raw:
+        if u not in usermap:
+            usermap[u] = len(usermap)
+            
+    itemmap = {}
+    for _, i, _ in data_raw:
+        if i not in itemmap:
+            itemmap[i] = len(itemmap)
+            
+    data = [(usermap[u], itemmap[i], r) for u, i, r in data_raw]
+    
+    
+    with open('data/data_target_users_test.csv', newline='') as f:
+        reader = csv.reader(f)
+        reader.__next__()
+        users = [int(u) for u, in reader]
+        for u in users:
+            if u not in usermap:
+                usermap[u] = len(usermap)
+        users = [usermap[u] for u in users]
+    
+    return data, {v: k for k, v in usermap.items()}, {v: k for k, v in itemmap.items()}, users
+
+
+def to_csr(data):
+    rows = [i[0] for i in data]
+    cols = [i[1] for i in data]
+    data = [i[2] for i in data]
+    
+    return sp.csr_matrix((data, (rows, cols)))
+
+
+def split_data2(data, testing_percentage: float, validation_percentage: float):
+    train_percentage = 1 - testing_percentage - validation_percentage
+    train_data, temp_data = train_test_split(data, test_size=1-train_percentage)
+    if testing_percentage == 0:
+        return to_csr(train_data), None, to_csr(temp_data)
+    test_data, val_data = train_test_split(temp_data, test_size=validation_percentage/(testing_percentage + validation_percentage))
+        
+    return to_csr(train_data), to_csr(test_data), to_csr(val_data)
+
+
+def submission2(recommender, users, usermap, itemmap, data_train):
+    
+    toppoprecommender = TopPop(data_train)
+    toppoprecommender.fit()
+    
+    with open('data/results.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['user_id', 'item_list'])
+        for user_id in users:
+            try:
+                item_list = recommender.recommend(user_id, cutoff=10)
+                item_list = [itemmap[i] for i in item_list]
+                writer.writerow([usermap[user_id], ' '.join(map(str, item_list))])
+            except IndexError:
+                item_list = toppoprecommender.recommend(0, cutoff=10)
+                item_list = [itemmap[i] for i in item_list]
+                writer.writerow([usermap[user_id], ' '.join(map(str, item_list))])
