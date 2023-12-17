@@ -112,9 +112,9 @@ class CFW_D_Similarity_Linalg(BaseItemCBFRecommender, BaseItemSimilarityMatrixRe
 
         estimated_n_samples = int(S_matrix_contentKNN.nnz*(1+self.add_zeros_quota)*1.2)
 
-        self.row_list = np.zeros(estimated_n_samples, dtype=np.int32)
-        self.col_list = np.zeros(estimated_n_samples, dtype=np.int32)
-        self.data_list = np.zeros(estimated_n_samples, dtype=np.float64)
+        self.row_list = np.zeros(estimated_n_samples, dtype=int)
+        self.col_list = np.zeros(estimated_n_samples, dtype=int)
+        self.data_list = np.zeros(estimated_n_samples, dtype=float)
 
         num_samples = 0
 
@@ -144,9 +144,9 @@ class CFW_D_Similarity_Linalg(BaseItemCBFRecommender, BaseItemSimilarityMatrixRe
 
                 if num_samples == estimated_n_samples:
                     dataBlock = 1000000
-                    self.row_list = np.concatenate((self.row_list, np.zeros(dataBlock, dtype=np.int32)))
-                    self.col_list = np.concatenate((self.col_list, np.zeros(dataBlock, dtype=np.int32)))
-                    self.data_list = np.concatenate((self.data_list, np.zeros(dataBlock, dtype=np.float64)))
+                    self.row_list = np.concatenate((self.row_list, np.zeros(dataBlock, dtype=int)))
+                    self.col_list = np.concatenate((self.col_list, np.zeros(dataBlock, dtype=int)))
+                    self.data_list = np.concatenate((self.data_list, np.zeros(dataBlock, dtype=float)))
 
                 if is_common[index]:
                     # If cell exists in target matrix, add its value

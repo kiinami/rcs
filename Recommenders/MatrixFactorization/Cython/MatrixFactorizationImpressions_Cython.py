@@ -305,7 +305,7 @@ class MatrixFactorization_AsySVD_Cython(_MatrixFactorization_Cython):
         if len(kwargs)>0:
             self._print("set_URM_train keyword arguments not supported for this recommender class. Received: {}".format(kwargs))
 
-        self.URM_train = check_matrix(URM_train_new.copy(), 'csr', dtype=np.float32)
+        self.URM_train = check_matrix(URM_train_new.copy(), 'csr', dtype=float)
         self.URM_train.eliminate_zeros()
 
         # No need to ever use a knn model

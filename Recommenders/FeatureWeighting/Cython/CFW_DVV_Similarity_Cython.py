@@ -86,19 +86,19 @@ class CFW_DVV_Similarity_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrix
         weights_initialization_D = None
 
         if initialization_mode_D == "random":
-            weights_initialization_D = np.random.normal(0.001, 0.1, self.n_features).astype(np.float64)
+            weights_initialization_D = np.random.normal(0.001, 0.1, self.n_features).astype(float)
         elif initialization_mode_D == "one":
-            weights_initialization_D = np.ones(self.n_features, dtype=np.float64)
+            weights_initialization_D = np.ones(self.n_features, dtype=float)
         elif initialization_mode_D == "zero":
-            weights_initialization_D = np.zeros(self.n_features, dtype=np.float64)
+            weights_initialization_D = np.zeros(self.n_features, dtype=float)
         elif initialization_mode_D == "BM25":
-            weights_initialization_D = np.ones(self.n_features, dtype=np.float64)
-            self.ICM = self.ICM.astype(np.float32)
+            weights_initialization_D = np.ones(self.n_features, dtype=float)
+            self.ICM = self.ICM.astype(float)
             self.ICM = okapi_BM_25(self.ICM)
 
         elif initialization_mode_D == "TF-IDF":
-            weights_initialization_D = np.ones(self.n_features, dtype=np.float64)
-            self.ICM = self.ICM.astype(np.float32)
+            weights_initialization_D = np.ones(self.n_features, dtype=float)
+            self.ICM = self.ICM.astype(float)
             self.ICM = TF_IDF(self.ICM)
 
         else:
@@ -196,14 +196,14 @@ class CFW_DVV_Similarity_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrix
         self.S_matrix_target = self.S_matrix_target.tocoo()
 
         if zeros_to_add != 0.0:
-            self.row_list = np.concatenate((np.array(self.S_matrix_target.row, dtype=np.int32), np.zeros(zeros_to_add, dtype=np.int32)))
-            self.col_list = np.concatenate((np.array(self.S_matrix_target.col, dtype=np.int32), np.zeros(zeros_to_add, dtype=np.int32)))
-            self.data_list = np.concatenate((np.array(self.S_matrix_target.data, dtype=np.float64), np.zeros(zeros_to_add, dtype=np.float64)))
+            self.row_list = np.concatenate((np.array(self.S_matrix_target.row, dtype=int), np.zeros(zeros_to_add, dtype=int)))
+            self.col_list = np.concatenate((np.array(self.S_matrix_target.col, dtype=int), np.zeros(zeros_to_add, dtype=int)))
+            self.data_list = np.concatenate((np.array(self.S_matrix_target.data, dtype=float), np.zeros(zeros_to_add, dtype=float)))
 
         else:
-            self.row_list = np.array(self.S_matrix_target.row, dtype=np.int32)
-            self.col_list = np.array(self.S_matrix_target.col, dtype=np.int32)
-            self.data_list = np.array(self.S_matrix_target.data, dtype=np.float64)
+            self.row_list = np.array(self.S_matrix_target.row, dtype=int)
+            self.col_list = np.array(self.S_matrix_target.col, dtype=int)
+            self.data_list = np.array(self.S_matrix_target.data, dtype=float)
 
         self._add_zeros_in_train_data_row_wise()
 
@@ -312,9 +312,9 @@ class CFW_DVV_Similarity_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrix
             # Use array as it reduces memory requirements compared to lists
             dataBlock = 10000000
 
-            values = np.zeros(dataBlock, dtype=np.float32)
-            rows = np.zeros(dataBlock, dtype=np.int32)
-            cols = np.zeros(dataBlock, dtype=np.int32)
+            values = np.zeros(dataBlock, dtype=float)
+            rows = np.zeros(dataBlock, dtype=int)
+            cols = np.zeros(dataBlock, dtype=int)
 
             numCells = 0
 
@@ -338,9 +338,9 @@ class CFW_DVV_Similarity_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrix
                 for index in range(len(values_to_add)):
 
                     if numCells == len(rows):
-                        rows = np.concatenate((rows, np.zeros(dataBlock, dtype=np.float32)))
-                        cols = np.concatenate((cols, np.zeros(dataBlock, dtype=np.int32)))
-                        values = np.concatenate((values, np.zeros(dataBlock, dtype=np.int32)))
+                        rows = np.concatenate((rows, np.zeros(dataBlock, dtype=float)))
+                        cols = np.concatenate((cols, np.zeros(dataBlock, dtype=int)))
+                        values = np.concatenate((values, np.zeros(dataBlock, dtype=int)))
 
 
                     rows[numCells] = rows_to_add[index]
@@ -364,7 +364,7 @@ class CFW_DVV_Similarity_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrix
 
             V_weights = sps.csr_matrix((values[:numCells], (rows[:numCells], cols[:numCells])),
                               shape=(self.n_items, self.n_items),
-                              dtype=np.float32)
+                              dtype=float)
 
             self.W_sparse += V_weights
             self.W_sparse = check_matrix(self.W_sparse, format='csr')

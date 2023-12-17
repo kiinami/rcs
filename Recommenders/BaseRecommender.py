@@ -19,17 +19,17 @@ class BaseRecommender(object):
 
         super(BaseRecommender, self).__init__()
 
-        self.URM_train = check_matrix(URM_train.copy(), 'csr', dtype=np.float32)
+        self.URM_train = check_matrix(URM_train.copy(), 'csr', dtype=float)
         self.URM_train.eliminate_zeros()
 
         self.n_users, self.n_items = self.URM_train.shape
         self.verbose = verbose
 
         self.filterTopPop = False
-        self.filterTopPop_ItemsID = np.array([], dtype=np.int)
+        self.filterTopPop_ItemsID = np.array([], dtype=int)
 
         self.items_to_ignore_flag = False
-        self.items_to_ignore_ID = np.array([], dtype=np.int)
+        self.items_to_ignore_ID = np.array([], dtype=int)
 
         self._cold_user_mask = np.ediff1d(self.URM_train.indptr) == 0
 
@@ -69,7 +69,7 @@ class BaseRecommender(object):
         if len(kwargs)>0:
             self._print("set_URM_train keyword arguments not supported for this recommender class. Received: {}".format(kwargs))
 
-        self.URM_train = check_matrix(URM_train_new.copy(), 'csr', dtype=np.float32)
+        self.URM_train = check_matrix(URM_train_new.copy(), 'csr', dtype=float)
         self.URM_train.eliminate_zeros()
 
         self._cold_user_mask = np.ediff1d(self.URM_train.indptr) == 0
@@ -82,11 +82,11 @@ class BaseRecommender(object):
 
     def set_items_to_ignore(self, items_to_ignore):
         self.items_to_ignore_flag = True
-        self.items_to_ignore_ID = np.array(items_to_ignore, dtype=np.int)
+        self.items_to_ignore_ID = np.array(items_to_ignore, dtype=int)
 
     def reset_items_to_ignore(self):
         self.items_to_ignore_flag = False
-        self.items_to_ignore_ID = np.array([], dtype=np.int)
+        self.items_to_ignore_ID = np.array([], dtype=int)
 
 
     #########################################################################################################

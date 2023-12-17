@@ -78,8 +78,8 @@ class IALSRecommender(BaseMatrixFactorizationRecommender, Incremental_Training_E
         warm_user_mask = np.ediff1d(self.URM_train.indptr) > 0
         warm_item_mask = np.ediff1d(self.URM_train.tocsc().indptr) > 0
 
-        self.warm_users = np.arange(0, self.n_users, dtype=np.int32)[warm_user_mask]
-        self.warm_items = np.arange(0, self.n_items, dtype=np.int32)[warm_item_mask]
+        self.warm_users = np.arange(0, self.n_users, dtype=int)[warm_user_mask]
+        self.warm_items = np.arange(0, self.n_items, dtype=int)[warm_item_mask]
 
         self.regularization_diagonal = np.diag(self.reg * np.ones(self.num_factors))
 
@@ -103,21 +103,21 @@ class IALSRecommender(BaseMatrixFactorizationRecommender, Incremental_Training_E
         else:
             self.C = self._log_scaling_confidence()
 
-        self.C_csc= check_matrix(self.C.copy(), format="csc", dtype = np.float32)
+        self.C_csc= check_matrix(self.C.copy(), format="csc", dtype = float)
 
 
 
 
     def _linear_scaling_confidence(self):
 
-        C = check_matrix(self.URM_train, format="csr", dtype = np.float32)
+        C = check_matrix(self.URM_train, format="csr", dtype = float)
         C.data = 1.0 + self.alpha*C.data
 
         return C
 
     def _log_scaling_confidence(self):
 
-        C = check_matrix(self.URM_train, format="csr", dtype = np.float32)
+        C = check_matrix(self.URM_train, format="csr", dtype = float)
         C.data = 1.0 + self.alpha * np.log(1.0 + C.data / self.epsilon)
 
         return C

@@ -87,10 +87,10 @@ class EASE_R_Recommender(BaseItemSimilarityMatrixRecommender):
 
         if self._is_content_sparse_check(B):
             self._print("Detected model matrix to be sparse, changing format.")
-            self.W_sparse = check_matrix(B, format='csr', dtype=np.float32)
+            self.W_sparse = check_matrix(B, format='csr', dtype=float)
 
         else:
-            self.W_sparse = check_matrix(B, format='npy', dtype=np.float32)
+            self.W_sparse = check_matrix(B, format='npy', dtype=float)
             self._W_sparse_format_checked = True
             self._compute_item_score = self._compute_score_W_dense
         #
@@ -132,7 +132,7 @@ class EASE_R_Recommender(BaseItemSimilarityMatrixRecommender):
         user_profile_array = self.URM_train[user_id_array]
 
         if items_to_compute is not None:
-            item_scores = - np.ones((len(user_id_array), self.URM_train.shape[1]), dtype=np.float32)*np.inf
+            item_scores = - np.ones((len(user_id_array), self.URM_train.shape[1]), dtype=float)*np.inf
             item_scores_all = user_profile_array.dot(self.W_sparse)#.toarray()
             item_scores[:, items_to_compute] = item_scores_all[:, items_to_compute]
         else:

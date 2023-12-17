@@ -23,7 +23,7 @@ class BaseItemCBFRecommender(_BaseRecommender):
 
         assert self.n_items == ICM_train.shape[0], "{}: URM_train has {} items but ICM_train has {}".format(self.RECOMMENDER_NAME, self.n_items, ICM_train.shape[0])
         
-        self.ICM_train = check_matrix(ICM_train.copy(), 'csr', dtype=np.float32)
+        self.ICM_train = check_matrix(ICM_train.copy(), 'csr', dtype=float)
         self.ICM_train.eliminate_zeros()
         
         _, self.n_features = self.ICM_train.shape
@@ -51,7 +51,7 @@ class BaseUserCBFRecommender(_BaseRecommender):
 
         assert self.n_users == UCM_train.shape[0], "{}: URM_train has {} users but UCM_train has {}".format(self.RECOMMENDER_NAME, self.n_items, UCM_train.shape[0])
 
-        self.UCM_train = check_matrix(UCM_train.copy(), 'csr', dtype=np.float32)
+        self.UCM_train = check_matrix(UCM_train.copy(), 'csr', dtype=float)
         self.UCM_train.eliminate_zeros()
 
         _, self.n_features = self.UCM_train.shape

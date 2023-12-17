@@ -32,12 +32,12 @@ class TopPop(BaseRecommender):
         # Create a single (n_items, ) array with the item score, then copy it for every user
 
         if items_to_compute is not None:
-            item_pop_to_copy = - np.ones(self.n_items, dtype=np.float32)*np.inf
+            item_pop_to_copy = - np.ones(self.n_items, dtype=float)*np.inf
             item_pop_to_copy[items_to_compute] = self.item_pop[items_to_compute].copy()
         else:
             item_pop_to_copy = self.item_pop.copy()
 
-        item_scores = np.array(item_pop_to_copy, dtype=np.float32).reshape((1, -1))
+        item_scores = np.array(item_pop_to_copy, dtype=float).reshape((1, -1))
         item_scores = np.repeat(item_scores, len(user_id_array), axis = 0)
 
         return item_scores
@@ -75,10 +75,10 @@ class GlobalEffects(BaseRecommender):
         self.n_items = self.URM_train.shape[1]
 
         # convert to csc matrix for faster column-wise sum
-        self.URM_train = check_matrix(self.URM_train, 'csc', dtype=np.float32)
+        self.URM_train = check_matrix(self.URM_train, 'csc', dtype=float)
 
         # 1) global average
-        self.mu = self.URM_train.data.sum(dtype=np.float32) / self.URM_train.nnz
+        self.mu = self.URM_train.data.sum(dtype=float) / self.URM_train.nnz
 
         # 2) item average bias
         # compute the number of non-zero elements for each column
@@ -110,7 +110,7 @@ class GlobalEffects(BaseRecommender):
         self.user_bias = np.asarray(self.user_bias).ravel()
         self.user_bias[row_nnz==0] = -np.inf
 
-        self.URM_train = check_matrix(self.URM_train, 'csr', dtype=np.float32)
+        self.URM_train = check_matrix(self.URM_train, 'csr', dtype=float)
 
 
 
@@ -122,12 +122,12 @@ class GlobalEffects(BaseRecommender):
         # the global average and user bias won't change the ranking, so there is no need to use them
 
         if items_to_compute is not None:
-            item_bias_to_copy = - np.ones(self.n_items, dtype=np.float32)*np.inf
+            item_bias_to_copy = - np.ones(self.n_items, dtype=float)*np.inf
             item_bias_to_copy[items_to_compute] = self.item_bias[items_to_compute].copy()
         else:
             item_bias_to_copy = self.item_bias.copy()
 
-        item_scores = np.array(item_bias_to_copy, dtype=np.float).reshape((1, -1))
+        item_scores = np.array(item_bias_to_copy, dtype=float).reshape((1, -1))
         item_scores = np.repeat(item_scores, len(user_id_array), axis = 0)
 
         return item_scores
@@ -168,7 +168,7 @@ class Random(BaseRecommender):
         # Create a random block (len(user_id_array), n_items) array with the item score
 
         if items_to_compute is not None:
-            item_scores = - np.ones((len(user_id_array), self.n_items), dtype=np.float32)*np.inf
+            item_scores = - np.ones((len(user_id_array), self.n_items), dtype=float)*np.inf
             item_scores[:, items_to_compute] = np.random.rand(len(user_id_array), len(items_to_compute))
 
         else:

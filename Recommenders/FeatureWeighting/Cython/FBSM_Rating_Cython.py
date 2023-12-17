@@ -80,19 +80,19 @@ class FBSM_Rating_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrixRecomme
         weights_initialization_D = None
 
         if initialization_mode_D == "random":
-            weights_initialization_D = np.random.normal(0.001, 0.1, self.n_features).astype(np.float64)
+            weights_initialization_D = np.random.normal(0.001, 0.1, self.n_features).astype(float)
         elif initialization_mode_D == "one":
-            weights_initialization_D = np.ones(self.n_features, dtype=np.float64)
+            weights_initialization_D = np.ones(self.n_features, dtype=float)
         elif initialization_mode_D == "zero":
-            weights_initialization_D = np.zeros(self.n_features, dtype=np.float64)
+            weights_initialization_D = np.zeros(self.n_features, dtype=float)
         elif initialization_mode_D == "BM25":
-            weights_initialization_D = np.ones(self.n_features, dtype=np.float64)
-            self.ICM = self.ICM.astype(np.float32)
+            weights_initialization_D = np.ones(self.n_features, dtype=float)
+            self.ICM = self.ICM.astype(float)
             self.ICM = okapi_BM_25(self.ICM)
 
         elif initialization_mode_D == "TF-IDF":
-            weights_initialization_D = np.ones(self.n_features, dtype=np.float64)
-            self.ICM = self.ICM.astype(np.float32)
+            weights_initialization_D = np.ones(self.n_features, dtype=float)
+            self.ICM = self.ICM.astype(float)
             self.ICM = TF_IDF(self.ICM)
 
         else:
@@ -214,9 +214,9 @@ class FBSM_Rating_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrixRecomme
             # Use array as it reduces memory requirements compared to lists
             dataBlock = 10000000
 
-            values = np.zeros(dataBlock, dtype=np.float32)
-            rows = np.zeros(dataBlock, dtype=np.int32)
-            cols = np.zeros(dataBlock, dtype=np.int32)
+            values = np.zeros(dataBlock, dtype=float)
+            rows = np.zeros(dataBlock, dtype=int)
+            cols = np.zeros(dataBlock, dtype=int)
 
             numCells = 0
 
@@ -242,9 +242,9 @@ class FBSM_Rating_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrixRecomme
                 for index in range(len(values_to_add)):
 
                     if numCells == len(rows):
-                        rows = np.concatenate((rows, np.zeros(dataBlock, dtype=np.int32)))
-                        cols = np.concatenate((cols, np.zeros(dataBlock, dtype=np.int32)))
-                        values = np.concatenate((values, np.zeros(dataBlock, dtype=np.float32)))
+                        rows = np.concatenate((rows, np.zeros(dataBlock, dtype=int)))
+                        cols = np.concatenate((cols, np.zeros(dataBlock, dtype=int)))
+                        values = np.concatenate((values, np.zeros(dataBlock, dtype=float)))
 
 
                     rows[numCells] = rows_to_add[index]
@@ -267,7 +267,7 @@ class FBSM_Rating_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrixRecomme
 
             V_weights = sps.csr_matrix((values[:numCells], (rows[:numCells], cols[:numCells])),
                               shape=(self.n_items, self.n_items),
-                              dtype=np.float32)
+                              dtype=float)
 
             self.W_sparse += V_weights
             self.W_sparse = check_matrix(self.W_sparse, format='csr')

@@ -236,7 +236,7 @@ class MultVAERecommender(BaseRecommender, Incremental_Training_Early_Stopping, B
     RECOMMENDER_NAME = "MultVAERecommender"
 
 
-    def __init__(self, URM_train, force_gpu = False):
+    def __init__(self, URM_train, force_gpu = True):
         super(MultVAERecommender, self).__init__(URM_train)
 
         if force_gpu:

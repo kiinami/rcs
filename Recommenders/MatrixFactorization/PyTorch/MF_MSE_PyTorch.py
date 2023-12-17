@@ -111,7 +111,7 @@ class MF_MSE_PyTorch(BaseMatrixFactorizationRecommender, Incremental_Training_Ea
                 self._print("Epoch {}, Batch: [{}/{}], Samples per second {:.2f}".format(num_epoch+1, num_batch+1, len(self.train_data_loader), (num_batch+1)*self.batch_size/(time.time()-start_time)))
 
             # On windows requires int64, on ubuntu int32
-            #input_data_tensor = Variable(torch.from_numpy(np.asarray(input_data, dtype=np.int64))).to(self.device)
+            #input_data_tensor = Variable(torch.from_numpy(np.asarray(input_data, dtype=int))).to(self.device)
             input_data_tensor = Variable(input_data).to(self.device)
 
             label_tensor = Variable(label).to(self.device)

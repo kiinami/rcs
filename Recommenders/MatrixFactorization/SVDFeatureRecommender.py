@@ -46,7 +46,7 @@ class SVDFeature(BaseRecommender):
         if items_to_compute is None:
             items_to_compute = np.arange(self.n_items)
 
-        item_scores = - np.ones((len(user_id_array), self.URM_train.shape[1]), dtype=np.float32)*np.inf
+        item_scores = - np.ones((len(user_id_array), self.URM_train.shape[1]), dtype=float)*np.inf
 
 
         with open(self.temp_file_folder + self.FILE_TEST_NAME, "w") as fileout:

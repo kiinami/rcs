@@ -157,7 +157,7 @@ import numpy as np
 
 class IncrementalSparseMatrix(IncrementalSparseMatrix_ListBased):
 
-    def __init__(self, auto_create_col_mapper = False, auto_create_row_mapper = False, n_rows = None, n_cols = None, dtype = np.float64):
+    def __init__(self, auto_create_col_mapper = False, auto_create_row_mapper = False, n_rows = None, n_cols = None, dtype = float):
 
         super(IncrementalSparseMatrix, self).__init__(auto_create_col_mapper = auto_create_col_mapper,
                                                              auto_create_row_mapper = auto_create_row_mapper,
@@ -251,7 +251,7 @@ class IncrementalSparseMatrix_FilterIDs(IncrementalSparseMatrix):
     """
 
     def __init__(self, preinitialized_col_mapper = None, preinitialized_row_mapper = None,
-                 on_new_col = "add", on_new_row = "add", dtype = np.float64):
+                 on_new_col = "add", on_new_row = "add", dtype = float):
         """
         Possible behaviour is:
         - Automatically add new ids:    if_new_col = "add" and predefined_col_mapper = None or predefined_col_mapper = {dict}

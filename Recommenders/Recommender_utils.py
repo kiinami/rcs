@@ -12,12 +12,12 @@ import scipy.sparse as sps
 import time
 import os
 
-def check_matrix(X, format='csc', dtype=np.float32):
+def check_matrix(X, format='csc', dtype=float):
     """
     This function takes a matrix as input and transforms it into the specified format.
     The matrix in input can be either sparse or ndarray.
     If the matrix in input has already the desired format, it is returned as-is
-    the dtype parameter is always applied and the default is np.float32
+    the dtype parameter is always applied and the default is float
     :param X:
     :param format:
     :param dtype:
@@ -69,7 +69,7 @@ def similarityMatrixTopK(item_weights, k=100, verbose = False, use_absolute_valu
     assert (item_weights.shape[0] == item_weights.shape[1]), "selectTopK: ItemWeights is not a square matrix"
 
     n_items = item_weights.shape[0]
-    similarity_builder = Incremental_Similarity_Builder(n_items, initial_data_block=n_items*k, dtype = np.float32)
+    similarity_builder = Incremental_Similarity_Builder(n_items, initial_data_block=n_items*k, dtype = float)
 
     start_time = time.time()
 
@@ -81,7 +81,7 @@ def similarityMatrixTopK(item_weights, k=100, verbose = False, use_absolute_valu
 
     # iterate over each column and keep only the top-k similar items
     if sparse_weights:
-        item_weights = check_matrix(item_weights, format='csc', dtype=np.float32)
+        item_weights = check_matrix(item_weights, format='csc', dtype=float)
 
 
     for item_idx in range(n_items):
@@ -95,7 +95,7 @@ def similarityMatrixTopK(item_weights, k=100, verbose = False, use_absolute_valu
 
         else:
             column_data = item_weights[:,item_idx]
-            column_row_index = np.arange(n_items, dtype=np.int32)
+            column_row_index = np.arange(n_items, dtype=int)
 
         if np.any(column_data==0):
             non_zero_data = column_data!=0
@@ -119,7 +119,7 @@ def similarityMatrixTopK(item_weights, k=100, verbose = False, use_absolute_valu
 
 
         similarity_builder.add_data_lists(row_list_to_add = column_row_index,
-                                          col_list_to_add = np.ones(len(column_row_index), dtype = np.int) * item_idx,
+                                          col_list_to_add = np.ones(len(column_row_index), dtype = int) * item_idx,
                                           data_list_to_add = column_data)
 
 

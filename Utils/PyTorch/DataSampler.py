@@ -54,7 +54,7 @@ class BPRSampler(Dataset):
         self._URM_train = sps.csr_matrix(URM_train)
         self.n_users, self.n_items = self._URM_train.shape
 
-        self.warm_user_index_to_original_id = np.arange(0, self.n_users, dtype=np.int64)[np.ediff1d(sps.csr_matrix(self._URM_train).indptr) > 0]
+        self.warm_user_index_to_original_id = np.arange(0, self.n_users, dtype=int)[np.ediff1d(sps.csr_matrix(self._URM_train).indptr) > 0]
 
     def __len__(self):
         return len(self.warm_user_index_to_original_id)
@@ -76,7 +76,7 @@ class BPRSampler(Dataset):
                 item_negative = negative_candidate
                 negative_selected = True
 
-        return user_id, item_positive.astype(np.int64), item_negative.astype(np.int64)
+        return user_id, item_positive.astype(int), item_negative.astype(int)
 
 
 class InteractionAndNegativeSampler(Dataset):
@@ -121,6 +121,6 @@ class InteractionAndNegativeSampler(Dataset):
                 item_negative = negative_candidate
                 negative_selected = True
 
-        return user_id, item_positive, item_negative.astype(np.int64)
+        return user_id, item_positive, item_negative.astype(int)
 
 

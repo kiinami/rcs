@@ -137,7 +137,7 @@ class SearchAbstractClass(object):
     _EVALUATE_ON_TEST_VALUES = ["all", "best", "last", "no"]
 
     # Value to be assigned to invalid configuration or if an Exception is raised
-    INVALID_CONFIG_VALUE = np.finfo(np.float16).max
+    INVALID_CONFIG_VALUE = np.finfo(float).max
 
     def __init__(self, recommender_class,
                  evaluator_validation = None,

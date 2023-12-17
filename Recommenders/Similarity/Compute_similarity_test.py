@@ -64,7 +64,7 @@ class MyTestCase(unittest.TestCase):
         TopK = 0
 
         data_matrix = np.array([[1,2,0,1],[0,1,4,1],[3,0,1,0]])
-        data_matrix = sps.csr_matrix(data_matrix, dtype=np.float)
+        data_matrix = sps.csr_matrix(data_matrix, dtype=float)
 
         row_weights = [2, 3, 0, 4]
 
@@ -227,7 +227,7 @@ class MyTestCase(unittest.TestCase):
         W_dense_Parallel = cosine_similarity.compute_similarity()
 
 
-        data_matrix = data_matrix.toarray().astype(np.float64)
+        data_matrix = data_matrix.toarray().astype(float)
         for row in range(data_matrix.shape[0]):
 
             nonzeroMask = data_matrix[row,:]>0
@@ -276,7 +276,7 @@ class MyTestCase(unittest.TestCase):
         W_dense_Parallel = cosine_similarity.compute_similarity()
 
 
-        data_matrix = data_matrix.toarray().astype(np.float64)
+        data_matrix = data_matrix.toarray().astype(float)
         for col in range(data_matrix.shape[1]):
 
             nonzeroMask = data_matrix[:,col]>0
@@ -326,7 +326,7 @@ class MyTestCase(unittest.TestCase):
 
 
         data_matrix.data = np.ones_like(data_matrix.data)
-        data_matrix = data_matrix.toarray().astype(np.float64)
+        data_matrix = data_matrix.toarray().astype(float)
 
         W_dense_mul = data_matrix.T.dot(data_matrix)
 

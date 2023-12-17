@@ -24,7 +24,7 @@ class Incremental_Similarity_Builder:
     array of length additional_data_block is created and concatenated to the previous one. This may cause memory spikes.
     """
 
-    def __init__(self, matrix_size, initial_data_block = 10000000, additional_data_block = 10000000, dtype = np.float32):
+    def __init__(self, matrix_size, initial_data_block = 10000000, additional_data_block = 10000000, dtype = float):
 
         self._matrix_size = matrix_size
         self._initial_data_block = initial_data_block
@@ -274,7 +274,7 @@ class Compute_Similarity_Python:
         :return:
         """
 
-        similarity_builder = Incremental_Similarity_Builder(self.n_columns, initial_data_block=self.n_columns*self.topK, dtype = np.float32)
+        similarity_builder = Incremental_Similarity_Builder(self.n_columns, initial_data_block=self.n_columns*self.topK, dtype = float)
 
         start_time = time.time()
         start_time_print_batch = start_time
@@ -396,7 +396,7 @@ class Compute_Similarity_Python:
                     this_column_weights = this_column_weights[non_zero_mask]
 
                 similarity_builder.add_data_lists(row_list_to_add=relevant_items_partition,
-                                                  col_list_to_add=np.ones(len(relevant_items_partition), dtype = np.int) * columnIndex,
+                                                  col_list_to_add=np.ones(len(relevant_items_partition), dtype = int) * columnIndex,
                                                   data_list_to_add=this_column_weights)
 
             # Add previous block size

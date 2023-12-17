@@ -50,7 +50,7 @@ class HP3_Similarity_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrixReco
         self.n_features = self.ICM.shape[1]
 
 
-        self.D_incremental = np.ones(self.n_features, dtype=np.float64)
+        self.D_incremental = np.ones(self.n_features, dtype=float)
         self.D_best = self.D_incremental.copy()
 
 
@@ -92,7 +92,7 @@ class HP3_Similarity_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrixReco
         self._generate_train_data()
 
 
-        weights_initialization_D = np.ones(self.n_features, dtype=np.float64) * init_value
+        weights_initialization_D = np.ones(self.n_features, dtype=float) * init_value
 
         # Instantiate fast Cython implementation
         self.HP3_Similarity = HP3_Similarity_Cython_SGD(self.row_list, self.col_list, self.data_list,
@@ -167,9 +167,9 @@ class HP3_Similarity_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrixReco
 
         estimated_n_samples = int(S_matrix_contentKNN.nnz*(1+self.add_zeros_quota)*1.2)
 
-        self.row_list = np.zeros(estimated_n_samples, dtype=np.int32)
-        self.col_list = np.zeros(estimated_n_samples, dtype=np.int32)
-        self.data_list = np.zeros(estimated_n_samples, dtype=np.float64)
+        self.row_list = np.zeros(estimated_n_samples, dtype=int)
+        self.col_list = np.zeros(estimated_n_samples, dtype=int)
+        self.data_list = np.zeros(estimated_n_samples, dtype=float)
 
         num_samples = 0
 
@@ -199,9 +199,9 @@ class HP3_Similarity_Cython(BaseItemCBFRecommender, BaseItemSimilarityMatrixReco
 
                 if num_samples == estimated_n_samples:
                     dataBlock = 1000000
-                    self.row_list = np.concatenate((self.row_list, np.zeros(dataBlock, dtype=np.int32)))
-                    self.col_list = np.concatenate((self.col_list, np.zeros(dataBlock, dtype=np.int32)))
-                    self.data_list = np.concatenate((self.data_list, np.zeros(dataBlock, dtype=np.float64)))
+                    self.row_list = np.concatenate((self.row_list, np.zeros(dataBlock, dtype=int)))
+                    self.col_list = np.concatenate((self.col_list, np.zeros(dataBlock, dtype=int)))
+                    self.data_list = np.concatenate((self.data_list, np.zeros(dataBlock, dtype=float)))
 
                 if is_common[index]:
                     # If cell exists in target matrix, add its value

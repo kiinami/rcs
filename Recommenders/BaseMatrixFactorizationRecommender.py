@@ -59,7 +59,7 @@ class BaseMatrixFactorizationRecommender(BaseRecommender):
                 self.RECOMMENDER_NAME, self.USER_factors.shape[0], np.max(user_id_array))
 
         if items_to_compute is not None:
-            item_scores = - np.ones((len(user_id_array), self.n_items), dtype=np.float32)*np.inf
+            item_scores = - np.ones((len(user_id_array), self.n_items), dtype=float)*np.inf
             item_scores[:, items_to_compute] = np.dot(self.USER_factors[user_id_array], self.ITEM_factors[items_to_compute,:].T)
 
         else:
@@ -157,7 +157,7 @@ class BaseSVDRecommender(BaseMatrixFactorizationRecommender):
                 self.RECOMMENDER_NAME, self.USER_factors.shape[0], np.max(user_id_array))
 
         if items_to_compute is not None:
-            item_scores = - np.ones((len(user_id_array), self.n_items), dtype=np.float32)*np.inf
+            item_scores = - np.ones((len(user_id_array), self.n_items), dtype=float)*np.inf
             item_scores[:, items_to_compute] = np.dot(self.USER_factors[user_id_array], sps.diags(self.Sigma).dot(self.ITEM_factors[items_to_compute,:].T))
 
         else:

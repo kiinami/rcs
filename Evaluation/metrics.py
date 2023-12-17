@@ -65,7 +65,7 @@ def average_precision(is_relevant):
     if len(is_relevant) == 0:
         a_p = 0.0
     else:
-        p_at_k = is_relevant * np.cumsum(is_relevant, dtype=np.float64) / (1 + np.arange(is_relevant.shape[0]))
+        p_at_k = is_relevant * np.cumsum(is_relevant, dtype=float) / (1 + np.arange(is_relevant.shape[0]))
         a_p = np.sum(p_at_k) / is_relevant.shape[0]
 
     assert 0 <= a_p <= 1, a_p
@@ -106,7 +106,7 @@ def average_precision_min_denominator(is_relevant, pos_items):
     if len(is_relevant) == 0:
         a_p = 0.0
     else:
-        p_at_k = is_relevant * np.cumsum(is_relevant, dtype=np.float64) / (1 + np.arange(is_relevant.shape[0]))
+        p_at_k = is_relevant * np.cumsum(is_relevant, dtype=float) / (1 + np.arange(is_relevant.shape[0]))
         a_p = np.sum(p_at_k) / np.min([pos_items.shape[0], is_relevant.shape[0]])
 
     assert 0 <= a_p <= 1, a_p
@@ -202,7 +202,7 @@ def arhr_all_hits(is_relevant):
     # http://glaros.dtc.umn.edu/gkhome/fetch/papers/itemrsTOIS04.pdf
     # https://emunix.emich.edu/~sverdlik/COSC562/ItemBasedTopTen.pdf
 
-    p_reciprocal = 1/np.arange(1,len(is_relevant)+1, 1.0, dtype=np.float64)
+    p_reciprocal = 1/np.arange(1,len(is_relevant)+1, 1.0, dtype=float)
     arhr_score = is_relevant.dot(p_reciprocal)
 
     assert not np.isnan(arhr_score), "ARHR_all_hits is NaN"
@@ -214,7 +214,7 @@ def precision(is_relevant):
     if len(is_relevant) == 0:
         precision_score = 0.0
     else:
-        precision_score = np.sum(is_relevant, dtype=np.float64) / len(is_relevant)
+        precision_score = np.sum(is_relevant, dtype=float) / len(is_relevant)
 
     assert 0 <= precision_score <= 1, precision_score
     return precision_score
@@ -225,7 +225,7 @@ def precision_recall_min_denominator(is_relevant, n_test_items):
     if len(is_relevant) == 0:
         precision_score = 0.0
     else:
-        precision_score = np.sum(is_relevant, dtype=np.float64) / min(n_test_items, len(is_relevant))
+        precision_score = np.sum(is_relevant, dtype=float) / min(n_test_items, len(is_relevant))
 
     assert 0 <= precision_score <= 1, precision_score
     return precision_score
@@ -234,7 +234,7 @@ def precision_recall_min_denominator(is_relevant, n_test_items):
 
 def recall(is_relevant, pos_items):
 
-    recall_score = np.sum(is_relevant, dtype=np.float64) / pos_items.shape[0]
+    recall_score = np.sum(is_relevant, dtype=float) / pos_items.shape[0]
 
     assert 0 <= recall_score <= 1, recall_score
     return recall_score
@@ -253,7 +253,7 @@ def ndcg(ranked_list, pos_items, relevance=None, at=None):
     it2rel = {it: r for it, r in zip(pos_items, relevance)}
 
     # Creates array of length "at" with the relevance associated to the item in that position
-    rank_scores = np.asarray([it2rel.get(it, 0.0) for it in ranked_list[:at]], dtype=np.float64)
+    rank_scores = np.asarray([it2rel.get(it, 0.0) for it in ranked_list[:at]], dtype=float)
 
     # DCG uses the relevance of the recommended items
     rank_dcg = dcg(rank_scores)
@@ -273,8 +273,8 @@ def ndcg(ranked_list, pos_items, relevance=None, at=None):
 
 
 def dcg(scores):
-    return np.sum(np.divide(np.power(2, scores) - 1, np.log2(np.arange(scores.shape[0], dtype=np.float64) + 2)),
-                  dtype=np.float64)
+    return np.sum(np.divide(np.power(2, scores) - 1, np.log2(np.arange(scores.shape[0], dtype=float) + 2)),
+                  dtype=float)
 
 
 ####################################################################################################################
@@ -290,8 +290,8 @@ class _Global_Item_Distribution_Counter(_Metrics_Object):
     def __init__(self, n_items, ignore_items):
         super(_Global_Item_Distribution_Counter, self).__init__()
 
-        self.recommended_counter = np.zeros(n_items, dtype=np.float)
-        self.ignore_items = ignore_items.astype(np.int).copy()
+        self.recommended_counter = np.zeros(n_items, dtype=float)
+        self.ignore_items = ignore_items.astype(int).copy()
 
 
     def add_recommendations(self, recommended_items_ids):
@@ -302,7 +302,7 @@ class _Global_Item_Distribution_Counter(_Metrics_Object):
 
         recommended_counter = self.recommended_counter.copy()
 
-        recommended_counter_mask = np.ones_like(recommended_counter, dtype = np.bool)
+        recommended_counter_mask = np.ones_like(recommended_counter, dtype = bool)
         recommended_counter_mask[self.ignore_items] = False
 
         recommended_counter = recommended_counter[recommended_counter_mask]
@@ -371,7 +371,7 @@ class Items_In_GT(_Metrics_Object):
         URM_test.eliminate_zeros()
 
         self.interaction_in_GT_counter = np.ediff1d(sps.csc_matrix(URM_test).indptr)
-        self.ignore_items = ignore_items.astype(np.int).copy()
+        self.ignore_items = ignore_items.astype(int).copy()
 
     def add_recommendations(self, recommended_items_ids):
         pass
@@ -396,7 +396,7 @@ class Users_In_GT(_Metrics_Object):
         URM_test.eliminate_zeros()
 
         self.interaction_in_GT_counter = np.ediff1d(sps.csr_matrix(URM_test).indptr)
-        self.ignore_users = ignore_users.astype(np.int).copy()
+        self.ignore_users = ignore_users.astype(int).copy()
 
     def add_recommendations(self, recommended_items_ids):
         pass
@@ -425,7 +425,7 @@ class Coverage_User(_Metrics_Object):
 
     def __init__(self, n_users, ignore_users):
         super(Coverage_User, self).__init__()
-        self.users_mask = np.zeros(n_users, dtype=np.bool)
+        self.users_mask = np.zeros(n_users, dtype=bool)
         self.n_ignore_users = len(ignore_users)
 
     def add_recommendations(self, recommended_items_ids, user_id):
@@ -454,7 +454,7 @@ class Coverage_User_HIT(_Metrics_Object):
 
     def __init__(self, n_users, ignore_users):
         super(Coverage_User_HIT, self).__init__()
-        self.users_mask = np.zeros(n_users, dtype=np.bool)
+        self.users_mask = np.zeros(n_users, dtype=bool)
         self.n_ignore_users = len(ignore_users)
 
     def add_recommendations(self, is_relevant, user_id):
@@ -589,7 +589,7 @@ def _compute_shannon_entropy(recommended_counter):
 
     # Ignore from the computation both ignored items and items with zero occurrence.
     # Zero occurrence items will have zero probability and will not change the result, butt will generate nans if used in the log
-    recommended_counter_mask = np.ones_like(recommended_counter, dtype = np.bool)
+    recommended_counter_mask = np.ones_like(recommended_counter, dtype = bool)
     recommended_counter_mask[recommended_counter == 0] = False
 
     recommended_counter = recommended_counter[recommended_counter_mask]
@@ -981,7 +981,7 @@ class Diversity_MeanInterList(_Metrics_Object):
     # for each couple of users, except the diagonal. It is VERY computationally expensive
     # We can move the 1 and cutoff outside of the summation. Remember to exclude the diagonal
     # co_counts = URM_predicted.dot(URM_predicted.T)
-    # co_counts[np.arange(0, n_user, dtype=np.int):np.arange(0, n_user, dtype=np.int)] = 0
+    # co_counts[np.arange(0, n_user, dtype=int):np.arange(0, n_user, dtype=int)] = 0
     # diversity = (n_user**2 - n_user) - co_counts.sum()/self.cutoff
 
     # If we represent the summation of co_counts separating it for each item, we will have:
@@ -999,7 +999,7 @@ class Diversity_MeanInterList(_Metrics_Object):
     def __init__(self, n_items, cutoff):
         super(Diversity_MeanInterList, self).__init__()
 
-        self.recommended_counter = np.zeros(n_items, dtype=np.float64)
+        self.recommended_counter = np.zeros(n_items, dtype=float)
 
         self.n_evaluated_users = 0
         self.n_items = n_items

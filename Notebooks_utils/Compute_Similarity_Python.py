@@ -12,7 +12,7 @@ import scipy.sparse as sps
 
 
 
-def check_matrix(X, format='csc', dtype=np.float32):
+def check_matrix(X, format='csc', dtype=float):
     if format == 'csc' and not isinstance(X, sps.csc_matrix):
         return X.tocsc().astype(dtype)
     elif format == 'csr' and not isinstance(X, sps.csr_matrix):
@@ -408,7 +408,7 @@ class Compute_Similarity_Python:
 
             W_sparse = sps.csr_matrix((values, (rows, cols)),
                                       shape=(self.n_columns, self.n_columns),
-                                      dtype=np.float32)
+                                      dtype=float)
 
 
             return W_sparse

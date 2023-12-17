@@ -42,21 +42,21 @@ class P3alphaRecommender(BaseItemSimilarityMatrixRecommender):
 
 
         #
-        # if X.dtype != np.float32:
-        #     print("P3ALPHA fit: For memory usage reasons, we suggest to use np.float32 as dtype for the dataset")
+        # if X.dtype != float:
+        #     print("P3ALPHA fit: For memory usage reasons, we suggest to use float as dtype for the dataset")
 
         if self.min_rating > 0:
             self.URM_train.data[self.URM_train.data < self.min_rating] = 0
             self.URM_train.eliminate_zeros()
             if self.implicit:
-                self.URM_train.data = np.ones(self.URM_train.data.size, dtype=np.float32)
+                self.URM_train.data = np.ones(self.URM_train.data.size, dtype=float)
 
         #Pui is the row-normalized urm
         Pui = normalize(self.URM_train, norm='l1', axis=1)
 
         #Piu is the column-normalized, "boolean" urm transposed
         X_bool = self.URM_train.transpose(copy=True)
-        X_bool.data = np.ones(X_bool.data.size, np.float32)
+        X_bool.data = np.ones(X_bool.data.size, float)
         #ATTENTION: axis is still 1 because i transposed before the normalization
         Piu = normalize(X_bool, norm='l1', axis=1)
         del(X_bool)
@@ -71,7 +71,7 @@ class P3alphaRecommender(BaseItemSimilarityMatrixRecommender):
         block_dim = 200
         d_t = Piu
 
-        similarity_builder = Incremental_Similarity_Builder(Pui.shape[1], initial_data_block=Pui.shape[1]*self.topK, dtype = np.float32)
+        similarity_builder = Incremental_Similarity_Builder(Pui.shape[1], initial_data_block=Pui.shape[1]*self.topK, dtype = float)
 
         start_time = time.time()
         start_time_printBatch = start_time
@@ -97,7 +97,7 @@ class P3alphaRecommender(BaseItemSimilarityMatrixRecommender):
                     relevant_items_partition = relevant_items_partition[non_zero_mask]
                     row_data = row_data[non_zero_mask]
 
-                similarity_builder.add_data_lists(row_list_to_add=np.ones(len(row_data), dtype = np.int) * (current_block_start_row + row_in_block),
+                similarity_builder.add_data_lists(row_list_to_add=np.ones(len(row_data), dtype = int) * (current_block_start_row + row_in_block),
                                                   col_list_to_add=relevant_items_partition,
                                                   data_list_to_add=row_data)
 

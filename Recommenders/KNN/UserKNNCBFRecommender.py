@@ -36,11 +36,11 @@ class UserKNNCBFRecommender(BaseUserCBFRecommender, BaseUserSimilarityMatrixReco
 
 
         if feature_weighting == "BM25":
-            self.UCM_train = self.UCM_train.astype(np.float32)
+            self.UCM_train = self.UCM_train.astype(float)
             self.UCM_train = okapi_BM_25(self.UCM_train)
 
         elif feature_weighting == "TF-IDF":
-            self.UCM_train = self.UCM_train.astype(np.float32)
+            self.UCM_train = self.UCM_train.astype(float)
             self.UCM_train = TF_IDF(self.UCM_train)
 
 

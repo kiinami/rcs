@@ -22,13 +22,15 @@ def json_not_serializable_handler(o):
     :return:
     """
 
-    if isinstance(o, np.integer):
+    if isinstance(o, int):
         return int(o)
 
-    if isinstance(o, np.bool_):
+    if isinstance(o, bool):
         return bool(o)
+    
+    return int(o)
 
-    raise TypeError("json_not_serializable_handler: object '{}' is not serializable.".format(type(o)))
+    #raise TypeError("json_not_serializable_handler: object '{}' is not serializable.".format(type(o)))
 
 
 
