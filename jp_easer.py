@@ -20,13 +20,12 @@ study = optuna.create_study(
 def objective(trial):
     topK = trial.suggest_int('topK', 0, 1000)
     l2_norm = trial.suggest_float('l2_norm', 1, 1e10, log=True)
-    normalize_matrix = trial.suggest_categorical('normalize_matrix', [True, False])
     
     recommender = EASE_R_Recommender(data_train, verbose=False)
     recommender.fit(
         topK=topK if topK > 0 else None,
         l2_norm=l2_norm,
-        normalize_matrix=normalize_matrix,
+        normalize_matrix=False,
     )
     _, _, ev_map, _, _ = evaluator(recommender, data_train, data_val)
     
