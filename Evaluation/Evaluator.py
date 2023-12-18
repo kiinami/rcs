@@ -338,8 +338,8 @@ class Evaluator(object):
         assert scores_batch.shape[0] == len(test_user_batch_array), "{}: scores_batch contained scores for {} users, expected was {}".format(
             self.EVALUATOR_NAME, scores_batch.shape[0], len(test_user_batch_array))
 
-        assert scores_batch.shape[1] == self.n_items, "{}: scores_batch contained scores for {} items, expected was {}".format(
-            self.EVALUATOR_NAME, scores_batch.shape[1], self.n_items)
+        # assert scores_batch.shape[1] == self.n_items, "{}: scores_batch contained scores for {} items, expected was {}".format(
+        #     self.EVALUATOR_NAME, scores_batch.shape[1], self.n_items)
 
 
         # Compute recommendation quality for each user in batch

@@ -1,6 +1,7 @@
 import os
 from utils import *
 import optuna
+from Evaluation.Evaluator import EvaluatorHoldout
 from Recommenders.MatrixFactorization.IALSRecommender import IALSRecommender
 
 
@@ -16,10 +17,11 @@ study = optuna.create_study(
     direction="maximize",
 )
 
+evaluator_validation = EvaluatorHoldout(data_val, cutoff_list=[10])
 
 def objective(trial):
     num_factors = trial.suggest_int('num_factors', 1, 500)
-    epochs = trial.suggest_categorical('epochs', list(range(1, 501, 50)))
+    epochs = trial.suggest_categorical('epochs', [10, 20, 50, 100, 200, 300])
     confidence_scaling = trial.suggest_categorical('confidence_scaling', ["linear", "log"])
     alpha = trial.suggest_float('alpha', 1e-7, 100, log=True)
     epsilon = trial.suggest_float('epsilon', 1e-7, 100, log=True)
@@ -33,6 +35,11 @@ def objective(trial):
         alpha=alpha,
         epsilon=epsilon,
         reg=reg,
+        validation_every_n=5,
+        stop_on_validation=True,
+        evaluator_object=evaluator_validation,
+        lower_validations_allowed=5,
+        validation_metric="MAP",
     )
     _, _, ev_map, _, _ = evaluator(recommender, data_train, data_val)
     
