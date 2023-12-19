@@ -21,7 +21,7 @@ evaluator_validation = EvaluatorHoldout(data_val, cutoff_list=[10])
 
 def objective(trial):
     num_factors = trial.suggest_int('num_factors', 1, 500)
-    epochs = trial.suggest_categorical('epochs', [10, 20, 50, 100, 200, 300])
+    epochs = trial.suggest_categorical('epochs', [50, 100, 200, 300, 400])
     confidence_scaling = trial.suggest_categorical('confidence_scaling', ["linear", "log"])
     alpha = trial.suggest_float('alpha', 1e-7, 100, log=True)
     epsilon = trial.suggest_float('epsilon', 1e-7, 100, log=True)
