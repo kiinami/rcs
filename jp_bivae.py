@@ -112,12 +112,12 @@ study = optuna.create_study(
 
 
 def objective(trial):
-    encoder_structure = trial.suggest_categorical('encoder_structure', [20, 40, 60, 80, 100, 200, 300])
+    encoder_structure = trial.suggest_categorical('encoder_structure', [20, 40, 60, 80, 100])
     act_fn = trial.suggest_categorical('act_fn', ['sigmoid', 'tanh', 'elu', 'relu', 'relu6'])
     likelihood = trial.suggest_categorical('likelihood', ['pois', 'gaus', 'bern'])
-    epochs = trial.suggest_int('epochs', 10, 150)
+    epochs = trial.suggest_int('epochs', 300, 700)
     batch_size = trial.suggest_categorical('batch_size', [32, 64, 128, 256, 512, 1024, 2048, 4096])
-    learning_rate = trial.suggest_float('learning_rate', 1e-6, 1e-1, log=True)
+    learning_rate = trial.suggest_float('learning_rate', 1e-4, 1e-1)
 
     recommender = BiVAECF(
         k=10,
