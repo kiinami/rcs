@@ -50,7 +50,7 @@ def split_data2(data, testing_percentage: float, validation_percentage: float):
     return to_csr(train_data), to_csr(test_data), to_csr(val_data)
 
 
-def evaluator(recommender: object, data_train, data_test: sp.csr_matrix, recommendation_length: int = 10):
+def evaluator(recommender: BiVAECF, data_train, data_test: sp.csr_matrix, recommendation_length: int = 10):
     accum_precision = 0
     accum_recall = 0
     accum_map = 0
@@ -73,7 +73,10 @@ def evaluator(recommender: object, data_train, data_test: sp.csr_matrix, recomme
             num_users_skipped += 1
             continue
 
-        recommendations = np.array(recommender.recommend(usermap_reverse[user_id], k=recommendation_length))
+        recommendations = np.array([
+            itemmap[i] for i 
+            in recommender.recommend(usermap_reverse[user_id], k=recommendation_length, remove_seen=True, train_set=data_train)
+            ])
 
         accum_precision += precision(recommendations, relevant_items)
         accum_recall += recall(recommendations, relevant_items)
