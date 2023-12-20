@@ -231,12 +231,12 @@ def to_csr(data):
     return sp.csr_matrix((data, (rows, cols)))
 
 
-def split_data2(data, testing_percentage: float, validation_percentage: float):
+def split_data2(data, testing_percentage: float, validation_percentage: float, seed: int = None):
     train_percentage = 1 - testing_percentage - validation_percentage
-    train_data, temp_data = train_test_split(data, test_size=1-train_percentage)
+    train_data, temp_data = train_test_split(data, test_size=1-train_percentage, random_state=seed)
     if testing_percentage == 0:
         return to_csr(train_data), None, to_csr(temp_data)
-    test_data, val_data = train_test_split(temp_data, test_size=validation_percentage/(testing_percentage + validation_percentage))
+    test_data, val_data = train_test_split(temp_data, test_size=validation_percentage/(testing_percentage + validation_percentage), random_state=seed)
         
     return to_csr(train_data), to_csr(test_data), to_csr(val_data)
 
