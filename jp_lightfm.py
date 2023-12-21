@@ -1,23 +1,13 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import os
 from utils import *
 import optuna
 
-
-# In[2]:
-
+from Recommenders.BaseRecommender import BaseRecommender
+from lightfm import LightFM
+import numpy as np
 
 data, usermap, itemmap, users = load_data2()
 data_train, data_test, data_val = split_data2(data, 0, 0.2)
-
-
-# In[ ]:
-
 
 study_name = "WARP"
 study = optuna.create_study(
@@ -26,14 +16,6 @@ study = optuna.create_study(
     load_if_exists=True,
     direction="maximize",
 )
-
-
-# In[3]:
-
-
-from Recommenders.BaseRecommender import BaseRecommender
-from lightfm import LightFM
-import numpy as np
 
 class LightFMCFRecommender(BaseRecommender):
     """LightFMCFRecommender"""
@@ -69,10 +51,6 @@ class LightFMCFRecommender(BaseRecommender):
 
         return item_scores
 
-
-# In[ ]:
-
-
 def objective(trial):
     epochs = trial.suggest_int('epochs', 1, 1000)
     alpha = trial.suggest_float('alpha', 0, 1)
@@ -90,10 +68,3 @@ def objective(trial):
     return ev_map
 
 study.optimize(objective, n_trials=150)
-
-
-# In[ ]:
-
-
-
-
