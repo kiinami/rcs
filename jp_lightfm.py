@@ -7,7 +7,7 @@ from lightfm import LightFM
 import numpy as np
 
 data, usermap, itemmap, users = load_data2()
-data_train, data_test, data_val = split_data2(data, 0, 0.2)
+data_train, data_val = split_data2(data, 0.2)
 
 study_name = "WARP"
 study = optuna.create_study(

@@ -4,7 +4,7 @@ import optuna
 from Recommenders.GraphBased.RP3betaRecommender import RP3betaRecommender
 
 data, usermap, itemmap, users = load_data2()
-data_train, data_test, data_val = split_data2(data, 0, 0.2)
+data_train, data_val = split_data2(data, 0.2)
 
 study_name = "P3Beta"
 study = optuna.create_study(

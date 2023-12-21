@@ -4,7 +4,7 @@ from implicit.gpu.als import AlternatingLeastSquares as IALSRecommender
 from implicit.evaluation import ranking_metrics_at_k
 
 data, usermap, itemmap, users = load_data2()
-data_train, data_test, data_val = split_data2(data, 0, 0.2, seed=42)
+data_train, data_val = split_data2(data, 0.2)
 
 study_name = "ImplicitALS"
 study = optuna.create_study(

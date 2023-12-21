@@ -5,7 +5,7 @@ from Recommenders.MatrixFactorization.NMFRecommender import NMFRecommender
 
 
 data, usermap, itemmap, users = load_data2()
-data_train, data_test, data_val = split_data2(data, 0, 0.2)
+data_train, data_val = split_data2(data, 0.2)
 
 
 study_name = "NFM"

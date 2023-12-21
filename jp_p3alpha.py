@@ -6,7 +6,7 @@ from optuna.trial import TrialState
 from Recommenders.GraphBased.P3alphaRecommender import P3alphaRecommender
 
 data, usermap, itemmap, users = load_data2()
-data_train, data_test, data_val = split_data2(data, 0, 0.2)
+data_train, data_val = split_data2(data, 0.2)
 
 study_name = "P3Alpha"
 study = optuna.create_study(

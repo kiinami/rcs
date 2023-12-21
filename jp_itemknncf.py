@@ -4,7 +4,7 @@ import optuna
 from Recommenders.KNN.ItemKNNCFRecommender import ItemKNNCFRecommender
 
 data, usermap, itemmap, users = load_data2()
-data_train, data_test, data_val = split_data2(data, 0, 0.2)
+data_train, data_val = split_data2(data, 0.2)
 
 study_name = "ItemKNNCF"
 study = optuna.create_study(

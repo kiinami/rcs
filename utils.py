@@ -223,22 +223,46 @@ def load_data2():
     return data, {v: k for k, v in usermap.items()}, {v: k for k, v in itemmap.items()}, users
 
 
-def to_csr(data):
-    rows = [i[0] for i in data]
-    cols = [i[1] for i in data]
-    data = [i[2] for i in data]
+def split_data2(data, testing_percentage: float, validation_percentage: float = None, seed: int = None):
+    num_users = len(set([u for u, _, _ in data]))
+    num_items = len(set([i for _, i, _ in data]))
     
-    return sp.csr_matrix((data, (rows, cols)))
+    if seed is None:
+        seed = randint(0, 10000)
+    
+    (user_ids_training, user_ids_test,
+     item_ids_training, item_ids_test,
+     ratings_training, ratings_test) = train_test_split([u for u, _, _ in data],
+                                                        [i for _, i, _ in data],
+                                                        [r for _, _, r in data],
+                                                        test_size=testing_percentage,
+                                                        shuffle=True,
+                                                        random_state=seed)
 
+    if not validation_percentage:
+        return sp.csr_matrix((ratings_training, (user_ids_training, item_ids_training)),
+                              shape=(num_users, num_items)), \
+               sp.csr_matrix((ratings_test, (user_ids_test, item_ids_test)),
+                             shape=(num_users, num_items))
 
-def split_data2(data, testing_percentage: float, validation_percentage: float, seed: int = None):
-    train_percentage = 1 - testing_percentage - validation_percentage
-    train_data, temp_data = train_test_split(data, test_size=1-train_percentage, random_state=seed)
-    if testing_percentage == 0:
-        return to_csr(train_data), None, to_csr(temp_data)
-    test_data, val_data = train_test_split(temp_data, test_size=validation_percentage/(testing_percentage + validation_percentage), random_state=seed)
-        
-    return to_csr(train_data), to_csr(test_data), to_csr(val_data)
+    (user_ids_training, user_ids_validation,
+     item_ids_training, item_ids_validation,
+     ratings_training, ratings_validation) = train_test_split(user_ids_training,
+                                                              item_ids_training,
+                                                              ratings_training,
+                                                              test_size=validation_percentage,
+                                                              )
+
+    urm_train = sp.csr_matrix((ratings_training, (user_ids_training, item_ids_training)),
+                              shape=(num_users, num_items))
+
+    urm_validation = sp.csr_matrix((ratings_validation, (user_ids_validation, item_ids_validation)),
+                                   shape=(num_users, num_items))
+
+    urm_test = sp.csr_matrix((ratings_test, (user_ids_test, item_ids_test)),
+                             shape=(num_users, num_items))
+
+    return urm_train, urm_validation, urm_test
 
 
 def submission2(recommender, users, usermap, itemmap, data_train):
