@@ -95,7 +95,7 @@ train_labs = training_dataframe["Label"]
 
 # Starts the training
 study = optuna.create_study(
-    study_name="XGBoost(P3Beta, TopPop, P3alpha, Easer, ItemKNNCF)",
+    study_name="XGBoost2(P3Beta, TopPop, P3alpha, Easer, ItemKNNCF)",
     storage=get_database_url(),
     load_if_exists=True,
     direction="maximize",
@@ -143,15 +143,14 @@ def evaluator(data_train, train_recs, XGB_model, training_dataframe, data_test: 
 
 
 def objective(trial):
-    objective = trial.suggest_categorical("objective", ["rank:ndcg", "rank:map", "rank:pairwise"])
-    n_estimators = trial.suggest_int("n_estimators", 5, 500)
-    learning_rate = trial.suggest_float("learning_rate", 1e-4, 1e-1, log=True)
+    objective = trial.suggest_categorical("objective", ["rank:ndcg", "rank:map"])
+    n_estimators = trial.suggest_int("n_estimators", 300, 1000)
+    learning_rate = trial.suggest_float("learning_rate", 1e-4, 1)
     reg_alpha = trial.suggest_float("reg_alpha", 1e-4, 1e-1, log=True)
     reg_lambda = trial.suggest_float("reg_lambda", 1e-4, 1e-1, log=True)
     max_depth = trial.suggest_int("max_depth", 1, 10)
-    max_leaves = trial.suggest_int("max_leaves", 1, 10)
-    grow_policy = trial.suggest_categorical("grow_policy", ["depthwise", "lossguide"])
-    booster = trial.suggest_categorical("booster", ["gbtree", "gblinear", "dart"])
+    max_leaves = trial.suggest_int("max_leaves", 5, 20)
+    booster = trial.suggest_categorical("booster", ["gbtree", "dart"])
 
     XGB_model = XGBRanker(
         tree_method="gpu_hist",
@@ -164,7 +163,7 @@ def objective(trial):
         reg_lambda=reg_lambda,
         max_depth=int(max_depth),
         max_leaves=int(max_leaves),
-        grow_policy=grow_policy,
+        grow_policy="lossguide",
         booster=booster,
         verbosity=0, # 2 if self.verbose else 0,
     )
