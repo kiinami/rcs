@@ -3,6 +3,7 @@ utils.py
 2023-11-02 kiinami
 """
 
+import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import scipy.sparse as sp
@@ -13,6 +14,8 @@ from Recommenders.NonPersonalizedRecommender import TopPop
 
 
 def get_database_url():
+    if not os.path.isfile('data/database_url.txt'):
+        return None
     with open('data/database_url.txt', 'r') as f:
         return f.read()
 
