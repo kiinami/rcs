@@ -19,7 +19,7 @@ def objective(trial):
     learning_rate = trial.suggest_float('learning_rate', 1e-8, 1)
     user_reg = trial.suggest_float('user_reg', 1e-8, 1)
     item_reg = trial.suggest_float('item_reg', 1e-8, 1)
-    epochs = trial.suggest_int('epochs', 5, 500)
+    epochs = trial.suggest_int('epochs', 5, 1000)
     
     recommender = MatrixFactorization_SVDpp_Cython(data_train, verbose=False)
     recommender.fit(
