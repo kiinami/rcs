@@ -88,13 +88,13 @@ cdef class FBSM_Rating_Cython_SGD:
                  gamma = 0.995, beta_1=0.9, beta_2=0.999, mean_init = 0.0, std_init = 0.001):
 
 
-        URM = check_matrix(URM, 'csr').astype(np.int32)
-        self.URM_mask_indices = np.array(URM.indices, dtype=np.int32)
-        self.URM_mask_indptr = np.array(URM.indptr, dtype=np.int32)
+        URM = check_matrix(URM, 'csr').astype(int)
+        self.URM_mask_indices = np.array(URM.indices, dtype=int)
+        self.URM_mask_indptr = np.array(URM.indptr, dtype=int)
 
-        ICM = check_matrix(ICM, 'csr').astype(np.int32)
-        self.ICM_indices = np.array(ICM.indices, dtype=np.int32)
-        self.ICM_indptr = np.array(ICM.indptr, dtype=np.int32)
+        ICM = check_matrix(ICM, 'csr').astype(int)
+        self.ICM_indices = np.array(ICM.indices, dtype=int)
+        self.ICM_indptr = np.array(ICM.indptr, dtype=int)
 
 
 
@@ -144,13 +144,13 @@ cdef class FBSM_Rating_Cython_SGD:
 
             # Compute sum of occurrencies of features in items each user interacted with
             # self.User_feature_count = #users, #features
-            URM.data = np.ones_like(URM.data, np.int32)
-            user_feature_count = (URM * ICM).astype(np.int32)
+            URM.data = np.ones_like(URM.data, int)
+            user_feature_count = (URM * ICM).astype(int)
 
             user_feature_count = check_matrix(user_feature_count, 'csr')
-            self.user_feature_count_indices = np.array(user_feature_count.indices, dtype=np.int32)
-            self.user_feature_count_indptr = np.array(user_feature_count.indptr, dtype=np.int32)
-            self.user_feature_count_data = np.array(user_feature_count.data, dtype=np.int32)
+            self.user_feature_count_indices = np.array(user_feature_count.indices, dtype=int)
+            self.user_feature_count_indptr = np.array(user_feature_count.indptr, dtype=int)
+            self.user_feature_count_data = np.array(user_feature_count.data, dtype=int)
 
             if self.verbose:
                 print("FBSM_Rating_Cython: Precomputing user_feature_count... Done. "
@@ -159,12 +159,12 @@ cdef class FBSM_Rating_Cython_SGD:
                     int(user_feature_count.nnz)/(URM.shape[0]*ICM.shape[1])))
 
         else:
-            self.user_feature_count_counter_temp = np.zeros(self.n_features, dtype=np.int32)
-            self.user_feature_count_flag = np.zeros(self.n_features, dtype=np.int32)
+            self.user_feature_count_counter_temp = np.zeros(self.n_features, dtype=int)
+            self.user_feature_count_flag = np.zeros(self.n_features, dtype=int)
 
         self.user_feature_count_len = 0
-        self.user_feature_count_id = np.zeros(self.n_features, dtype=np.int32)
-        self.user_feature_count_counter = np.zeros(self.n_features, dtype=np.int32)
+        self.user_feature_count_id = np.zeros(self.n_features, dtype=int)
+        self.user_feature_count_counter = np.zeros(self.n_features, dtype=int)
 
 
 
@@ -228,11 +228,11 @@ cdef class FBSM_Rating_Cython_SGD:
 
         cdef BPR_sample sample
 
-        cdef int [:] user_feature_count_u_full_vector = np.zeros(self.n_features, dtype=np.int32)
+        cdef int [:] user_feature_count_u_full_vector = np.zeros(self.n_features, dtype=int)
         cdef double [:] D_update = np.zeros(self.n_features, dtype=np.float64)
         cdef double [:,:] V_update = np.zeros((self.n_factors, self.n_features), dtype=np.float64)
-        cdef int [:] updated_features_id = np.zeros(self.n_features, dtype=np.int32)
-        cdef int [:] updated_features_flag = np.zeros(self.n_features, dtype=np.int32)
+        cdef int [:] updated_features_id = np.zeros(self.n_features, dtype=int)
+        cdef int [:] updated_features_flag = np.zeros(self.n_features, dtype=int)
         cdef int updated_features_count
 
         # cdef array[double] template_zero = array('d')

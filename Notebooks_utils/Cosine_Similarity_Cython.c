@@ -3853,8 +3853,8 @@ static PyObject *__pyx_pf_24Cosine_Similarity_Cython_17Cosine_Similarity_2comput
  *         # Data structure to incrementally build sparse matrix
  *         # Preinitialize max possible length
  *         cdef double[:] values = np.zeros((self.n_items*self.TopK))             # <<<<<<<<<<<<<<
- *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
- *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
+ *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=int)
+ *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=int)
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -3888,8 +3888,8 @@ static PyObject *__pyx_pf_24Cosine_Similarity_Cython_17Cosine_Similarity_2comput
   /* "Cosine_Similarity_Cython.pyx":143
  *         # Preinitialize max possible length
  *         cdef double[:] values = np.zeros((self.n_items*self.TopK))
- *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)             # <<<<<<<<<<<<<<
- *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
+ *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=int)             # <<<<<<<<<<<<<<
+ *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=int)
  *         cdef long sparse_data_pointer = 0
  */
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
@@ -3931,8 +3931,8 @@ static PyObject *__pyx_pf_24Cosine_Similarity_Cython_17Cosine_Similarity_2comput
 
   /* "Cosine_Similarity_Cython.pyx":144
  *         cdef double[:] values = np.zeros((self.n_items*self.TopK))
- *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
- *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)             # <<<<<<<<<<<<<<
+ *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=int)
+ *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=int)             # <<<<<<<<<<<<<<
  *         cdef long sparse_data_pointer = 0
  * 
  */
@@ -3974,8 +3974,8 @@ static PyObject *__pyx_pf_24Cosine_Similarity_Cython_17Cosine_Similarity_2comput
   __pyx_t_7.data = NULL;
 
   /* "Cosine_Similarity_Cython.pyx":145
- *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
- *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
+ *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=int)
+ *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=int)
  *         cdef long sparse_data_pointer = 0             # <<<<<<<<<<<<<<
  * 
  * 

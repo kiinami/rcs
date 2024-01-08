@@ -70,8 +70,8 @@ cdef class CFW_D_Similarity_Cython_SGD:
 
         super(CFW_D_Similarity_Cython_SGD, self).__init__()
 
-        self.row_list = np.array(row_list, dtype=np.int32)
-        self.col_list = np.array(col_list, dtype=np.int32)
+        self.row_list = np.array(row_list, dtype=int)
+        self.col_list = np.array(col_list, dtype=int)
         self.data_list = np.array(data_list, dtype=np.float64)
 
         self.n_features = n_features
@@ -92,10 +92,10 @@ cdef class CFW_D_Similarity_Cython_SGD:
         self.run_tests()
 
 
-        self.common_features_id = np.zeros((self.n_features), dtype=np.int32)
+        self.common_features_id = np.zeros((self.n_features), dtype=int)
         self.common_features_data = np.zeros((self.n_features), dtype=np.float64)
         self.common_features_data_i = np.zeros((self.n_features), dtype=np.float64)
-        self.common_features_flag = np.zeros((self.n_features), dtype=np.int32)
+        self.common_features_flag = np.zeros((self.n_features), dtype=int)
 
         self.precompute_common_features = precompute_common_features
 
@@ -103,8 +103,8 @@ cdef class CFW_D_Similarity_Cython_SGD:
             self.precompute_common_features_function(ICM)
 
         else:
-            self.icm_indices = np.array(ICM.indices, dtype=np.int32)
-            self.icm_indptr = np.array(ICM.indptr, dtype=np.int32)
+            self.icm_indices = np.array(ICM.indices, dtype=int)
+            self.icm_indptr = np.array(ICM.indptr, dtype=int)
             self.icm_data = np.array(ICM.data, dtype=np.float64)
 
 
@@ -115,7 +115,7 @@ cdef class CFW_D_Similarity_Cython_SGD:
 
         self.use_dropout = use_dropout
         self.dropout_perc = dropout_perc
-        self.dropout_mask = np.ones(self.n_features, dtype=np.int32)
+        self.dropout_mask = np.ones(self.n_features, dtype=int)
 
 
         self.useAdaGrad = False
@@ -159,10 +159,10 @@ cdef class CFW_D_Similarity_Cython_SGD:
 
         n_test_features = 50
 
-        self.common_features_id = np.zeros((n_test_features), dtype=np.int32)
+        self.common_features_id = np.zeros((n_test_features), dtype=int)
         self.common_features_data = np.zeros((n_test_features), dtype=np.float64)
         self.common_features_data_i = np.zeros((n_test_features), dtype=np.float64)
-        self.common_features_flag = np.zeros((n_test_features), dtype=np.int32)
+        self.common_features_flag = np.zeros((n_test_features), dtype=int)
 
         self.feature_common_test()
 
@@ -174,8 +174,8 @@ cdef class CFW_D_Similarity_Cython_SGD:
         commonFeatures = ICM[np.array(self.row_list)].multiply(ICM[np.array(self.col_list)])
 
         # Init Common features
-        self.commonFeatures_indices = np.array(commonFeatures.indices, dtype=np.int32)
-        self.commonFeatures_indptr = np.array(commonFeatures.indptr, dtype=np.int32)
+        self.commonFeatures_indices = np.array(commonFeatures.indices, dtype=int)
+        self.commonFeatures_indptr = np.array(commonFeatures.indptr, dtype=int)
         self.commonFeatures_data = np.array(commonFeatures.data, dtype=np.float64)
 
 
@@ -408,8 +408,8 @@ cdef class CFW_D_Similarity_Cython_SGD:
             print("CFW_D_Similarity_Cython: feature_common_test")
 
         # No duplicates
-        f_i = np.array([0, 5, 8, 10, 19], dtype=np.int32)
-        f_j = np.array([1, 7, 9, 11, 15, 18], dtype=np.int32)
+        f_i = np.array([0, 5, 8, 10, 19], dtype=int)
+        f_j = np.array([1, 7, 9, 11, 15, 18], dtype=int)
 
         common_np = np.intersect1d(f_i, f_j)
         count = self.feature_common_unordered(f_i, f_j, np.ones_like(f_i, dtype=np.float64), np.ones_like(f_j, dtype=np.float64))
@@ -421,8 +421,8 @@ cdef class CFW_D_Similarity_Cython_SGD:
 
 
         # Duplicates
-        f_i = np.array([0, 5, 8, 10, 19], dtype=np.int32)
-        f_j = np.array([1, 10, 11], dtype=np.int32)
+        f_i = np.array([0, 5, 8, 10, 19], dtype=int)
+        f_j = np.array([1, 10, 11], dtype=int)
 
         common_np = np.intersect1d(f_i, f_j)
         count = self.feature_common_unordered(f_i, f_j, np.ones_like(f_i, dtype=np.float64), np.ones_like(f_j, dtype=np.float64))
@@ -434,8 +434,8 @@ cdef class CFW_D_Similarity_Cython_SGD:
 
 
 
-        f_i = np.array([0, 5, 8, 10, 19], dtype=np.int32)
-        f_j = np.array([1, 2, 5, 10, 15], dtype=np.int32)
+        f_i = np.array([0, 5, 8, 10, 19], dtype=int)
+        f_j = np.array([1, 2, 5, 10, 15], dtype=int)
 
         common_np = np.intersect1d(f_i, f_j)
         count = self.feature_common_unordered(f_i, f_j, np.ones_like(f_i, dtype=np.float64), np.ones_like(f_j, dtype=np.float64))
@@ -450,11 +450,11 @@ cdef class CFW_D_Similarity_Cython_SGD:
         for _ in range(100):
 
             size_f_i = np.random.randint(1,10)
-            f_i = np.random.randint(0,50, size=size_f_i, dtype=np.int32)
+            f_i = np.random.randint(0,50, size=size_f_i, dtype=int)
             f_i = np.unique(f_i)
 
             size_f_j = np.random.randint(1,10)
-            f_j = np.random.randint(0,50, size=size_f_j, dtype=np.int32)
+            f_j = np.random.randint(0,50, size=size_f_j, dtype=int)
             f_j = np.unique(f_j)
 
             common_np = np.intersect1d(f_i, f_j)

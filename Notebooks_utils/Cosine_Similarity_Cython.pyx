@@ -140,8 +140,8 @@ cdef class Cosine_Similarity:
         # Data structure to incrementally build sparse matrix
         # Preinitialize max possible length
         cdef double[:] values = np.zeros((self.n_items*self.TopK))
-        cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
-        cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
+        cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=int)
+        cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=int)
         cdef long sparse_data_pointer = 0
 
 

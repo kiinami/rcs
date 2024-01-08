@@ -146,8 +146,8 @@ cdef class Compute_Similarity_Cython:
 
         self.topK = min(topK, self.n_columns)
         self.this_item_weights = np.zeros(self.n_columns, dtype=np.float64)
-        self.this_item_weights_id = np.zeros(self.n_columns, dtype=np.int32)
-        self.this_item_weights_mask = np.zeros(self.n_columns, dtype=np.int32)
+        self.this_item_weights_id = np.zeros(self.n_columns, dtype=int)
+        self.this_item_weights_mask = np.zeros(self.n_columns, dtype=int)
         self.this_item_weights_counter = 0
 
         # Copy data to avoid altering the original object
@@ -437,8 +437,8 @@ cdef class Compute_Similarity_Cython:
         # Preinitialize max possible length
         cdef unsigned long long max_cells = <long long> self.n_columns*self.topK
         cdef double[:] values = np.zeros((max_cells))
-        cdef int[:] rows = np.zeros((max_cells,), dtype=np.int32)
-        cdef int[:] cols = np.zeros((max_cells,), dtype=np.int32)
+        cdef int[:] rows = np.zeros((max_cells,), dtype=int)
+        cdef int[:] cols = np.zeros((max_cells,), dtype=int)
         cdef long sparse_data_pointer = 0
 
         cdef int start_col_local = 0, end_col_local = self.n_columns

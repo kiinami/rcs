@@ -71,8 +71,8 @@ cdef class CFW_DVV_Similarity_Cython_SGD:
                  gamma = 0.995, beta_1=0.9, beta_2=0.999, mean_init = 0.0, std_init = 0.001):
 
 
-        self.row_list = np.array(row_list, dtype=np.int32)
-        self.col_list = np.array(col_list, dtype=np.int32)
+        self.row_list = np.array(row_list, dtype=int)
+        self.col_list = np.array(col_list, dtype=int)
         self.data_list = np.array(data_list, dtype=np.float64)
 
         self.n_samples = len(self.row_list)
@@ -123,11 +123,11 @@ cdef class CFW_DVV_Similarity_Cython_SGD:
         self.icm_indptr = self.ICM.indptr
 
 
-        self.union_features_id = np.zeros((self.n_features), dtype=np.int32)
-        self.union_features_flag = np.zeros((self.n_features), dtype=np.int32)
+        self.union_features_id = np.zeros((self.n_features), dtype=int)
+        self.union_features_flag = np.zeros((self.n_features), dtype=int)
 
-        self.common_features_id = np.zeros((self.n_features), dtype=np.int32)
-        self.common_features_flag = np.zeros((self.n_features), dtype=np.int32)
+        self.common_features_id = np.zeros((self.n_features), dtype=int)
+        self.common_features_flag = np.zeros((self.n_features), dtype=int)
 
         self.feature_union_test()
         self.feature_common_test()
@@ -618,8 +618,8 @@ cdef class CFW_DVV_Similarity_Cython_SGD:
             print("CFW_DVV_Similarity_Cython_SGD: feature_union_test")
 
         # No duplicates
-        f_i = np.array([0, 5, 8, 10, 19], dtype=np.int32)
-        f_j = np.array([1, 7, 9, 11, 15, 18], dtype=np.int32)
+        f_i = np.array([0, 5, 8, 10, 19], dtype=int)
+        f_j = np.array([1, 7, 9, 11, 15, 18], dtype=int)
 
         union_np = np.union1d(f_i, f_j)
         union_cy = self.feature_union(f_i, f_j)
@@ -638,8 +638,8 @@ cdef class CFW_DVV_Similarity_Cython_SGD:
 
 
         # Duplicates
-        f_i = np.array([0, 5, 8, 10, 19], dtype=np.int32)
-        f_j = np.array([1, 10, 11], dtype=np.int32)
+        f_i = np.array([0, 5, 8, 10, 19], dtype=int)
+        f_j = np.array([1, 10, 11], dtype=int)
 
         union_np = np.union1d(f_i, f_j)
         union_cy = self.feature_union(f_i, f_j)
@@ -658,8 +658,8 @@ cdef class CFW_DVV_Similarity_Cython_SGD:
 
 
 
-        f_i = np.array([0, 5, 8, 10, 19], dtype=np.int32)
-        f_j = np.array([1, 2, 5, 10, 15], dtype=np.int32)
+        f_i = np.array([0, 5, 8, 10, 19], dtype=int)
+        f_j = np.array([1, 2, 5, 10, 15], dtype=int)
 
         union_np = np.union1d(f_i, f_j)
         union_cy = self.feature_union(f_i, f_j)
@@ -681,11 +681,11 @@ cdef class CFW_DVV_Similarity_Cython_SGD:
         for _ in range(100):
 
             size_f_i = np.random.randint(1,10)
-            f_i = np.random.randint(0,50, size=size_f_i, dtype=np.int32)
+            f_i = np.random.randint(0,50, size=size_f_i, dtype=int)
             f_i = np.unique(f_i)
 
             size_f_j = np.random.randint(1,10)
-            f_j = np.random.randint(0,50, size=size_f_j, dtype=np.int32)
+            f_j = np.random.randint(0,50, size=size_f_j, dtype=int)
             f_j = np.unique(f_j)
 
             union_np = np.union1d(f_i, f_j)
@@ -716,8 +716,8 @@ cdef class CFW_DVV_Similarity_Cython_SGD:
             print("CFW_DVV_Similarity_Cython_SGD: feature_common_test")
 
         # No duplicates
-        f_i = np.array([0, 5, 8, 10, 19], dtype=np.int32)
-        f_j = np.array([1, 7, 9, 11, 15, 18], dtype=np.int32)
+        f_i = np.array([0, 5, 8, 10, 19], dtype=int)
+        f_j = np.array([1, 7, 9, 11, 15, 18], dtype=int)
 
         common_np = np.intersect1d(f_i, f_j)
         count = self.feature_common_unordered(f_i, f_j)
@@ -729,8 +729,8 @@ cdef class CFW_DVV_Similarity_Cython_SGD:
 
 
         # Duplicates
-        f_i = np.array([0, 5, 8, 10, 19], dtype=np.int32)
-        f_j = np.array([1, 10, 11], dtype=np.int32)
+        f_i = np.array([0, 5, 8, 10, 19], dtype=int)
+        f_j = np.array([1, 10, 11], dtype=int)
 
         common_np = np.intersect1d(f_i, f_j)
         count = self.feature_common_unordered(f_i, f_j)
@@ -742,8 +742,8 @@ cdef class CFW_DVV_Similarity_Cython_SGD:
 
 
 
-        f_i = np.array([0, 5, 8, 10, 19], dtype=np.int32)
-        f_j = np.array([1, 2, 5, 10, 15], dtype=np.int32)
+        f_i = np.array([0, 5, 8, 10, 19], dtype=int)
+        f_j = np.array([1, 2, 5, 10, 15], dtype=int)
 
         common_np = np.intersect1d(f_i, f_j)
         count = self.feature_common_unordered(f_i, f_j)
@@ -758,11 +758,11 @@ cdef class CFW_DVV_Similarity_Cython_SGD:
         for _ in range(100):
 
             size_f_i = np.random.randint(1,10)
-            f_i = np.random.randint(0,50, size=size_f_i, dtype=np.int32)
+            f_i = np.random.randint(0,50, size=size_f_i, dtype=int)
             f_i = np.unique(f_i)
 
             size_f_j = np.random.randint(1,10)
-            f_j = np.random.randint(0,50, size=size_f_j, dtype=np.int32)
+            f_j = np.random.randint(0,50, size=size_f_j, dtype=int)
             f_j = np.unique(f_j)
 
             common_np = np.intersect1d(f_i, f_j)

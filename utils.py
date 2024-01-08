@@ -278,10 +278,10 @@ def submission2(recommender, users, usermap, itemmap, data_train):
         writer.writerow(['user_id', 'item_list'])
         for user_id in users:
             try:
-                item_list = recommender.recommend(user_id, cutoff=10)
+                item_list = recommender.recommend(user_id, cutoff=10, remove_seen_flag=True, remove_top_pop_flag=True)
                 item_list = [itemmap[i] for i in item_list]
                 writer.writerow([usermap[user_id], ' '.join(map(str, item_list))])
             except IndexError:
-                item_list = toppoprecommender.recommend(0, cutoff=10)
+                item_list = toppoprecommender.recommend(0, cutoff=10, remove_seen_flag=True)
                 item_list = [itemmap[i] for i in item_list]
                 writer.writerow([usermap[user_id], ' '.join(map(str, item_list))])

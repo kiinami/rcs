@@ -59,13 +59,13 @@ from libc.stdlib cimport rand, srand, RAND_MAX
 #         self.n_data_points = URM_train.nnz
 #         self.n_samples_drawn = 0
 #
-#         self.URM_train_row = np.array(URM_train.row, dtype=np.int32)
-#         self.URM_train_col = np.array(URM_train.col, dtype=np.int32)
+#         self.URM_train_row = np.array(URM_train.row, dtype=int)
+#         self.URM_train_col = np.array(URM_train.col, dtype=int)
 #         self.URM_train_data = np.array(URM_train.data, dtype=np.float64)
 #
 #         self.batch_size = batch_size
-#         self.batch_user = np.zeros(self.batch_size, dtype=np.int32)
-#         self.batch_col = np.zeros(self.batch_size, dtype=np.int32)
+#         self.batch_user = np.zeros(self.batch_size, dtype=int)
+#         self.batch_col = np.zeros(self.batch_size, dtype=int)
 #         self.batch_rating = np.zeros(self.batch_size, dtype=np.float64)
 #
 #     def __len__(self):
@@ -92,8 +92,8 @@ from libc.stdlib cimport rand, srand, RAND_MAX
 #             self.batch_col[i_batch] = self.URM_train_col[i_data]
 #             self.batch_rating[i_batch] = self.URM_train_data[i_data]
 #
-#         return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=np.int64)),\
-#                torch.from_numpy(np.array(self.batch_col[:i_batch+1], dtype=np.int64)), \
+#         return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=int)),\
+#                torch.from_numpy(np.array(self.batch_col[:i_batch+1], dtype=int)), \
 #                torch.from_numpy(np.array(self.batch_rating[:i_batch+1], dtype=np.float64))
 #
 
@@ -131,18 +131,18 @@ cdef class InteractionIterator:
         self.n_samples_to_draw = self.n_samples_available if set_n_samples_to_draw is None else set_n_samples_to_draw
         self.n_samples_drawn = 0
 
-        self.URM_train_row = np.array(URM_train.row, dtype=np.int32)
-        self.URM_train_col = np.array(URM_train.col, dtype=np.int32)
+        self.URM_train_row = np.array(URM_train.row, dtype=int)
+        self.URM_train_col = np.array(URM_train.col, dtype=int)
         self.URM_train_data = np.array(URM_train.data, dtype=np.float64)
 
         URM_train = sps.csr_matrix(URM_train)
         URM_train = URM_train.sorted_indices()
-        self.URM_train_indices = np.array(URM_train.indices, dtype=np.int32)
-        self.URM_train_indptr = np.array(URM_train.indptr, dtype=np.int32)
+        self.URM_train_indices = np.array(URM_train.indices, dtype=int)
+        self.URM_train_indptr = np.array(URM_train.indptr, dtype=int)
 
         self.batch_size = batch_size
-        self.batch_user = np.zeros(self.batch_size, dtype=np.int32)
-        self.batch_item = np.zeros(self.batch_size, dtype=np.int32)
+        self.batch_user = np.zeros(self.batch_size, dtype=int)
+        self.batch_item = np.zeros(self.batch_size, dtype=int)
         self.batch_rating = np.zeros(self.batch_size, dtype=np.float64)
 
     def __len__(self):
@@ -197,8 +197,8 @@ cdef class InteractionIterator:
                 self.batch_item[i_batch] = negative_item
                 self.batch_rating[i_batch] = 0.0
 
-        return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=np.int64)),\
-               torch.from_numpy(np.array(self.batch_item[:i_batch+1], dtype=np.int64)), \
+        return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=int)),\
+               torch.from_numpy(np.array(self.batch_item[:i_batch+1], dtype=int)), \
                torch.from_numpy(np.array(self.batch_rating[:i_batch+1], dtype=np.float64))
 
 
@@ -234,24 +234,24 @@ cdef class BPRIterator:
         self.n_users, self.n_items = URM_train.shape
         self.n_negatives_per_positive = n_negatives_per_positive
 
-        self.warm_user_index_to_original_id = np.arange(0, self.n_users, dtype=np.int32)[np.ediff1d(URM_train.indptr) > 0]
+        self.warm_user_index_to_original_id = np.arange(0, self.n_users, dtype=int)[np.ediff1d(URM_train.indptr) > 0]
         self.n_samples_available = len(self.warm_user_index_to_original_id)
         self.n_samples_to_draw = self.n_samples_available if set_n_samples_to_draw is None else set_n_samples_to_draw
         self.n_samples_drawn = 0
 
         URM_train = sps.csr_matrix(URM_train)
         URM_train = URM_train.sorted_indices()
-        self.URM_train_indices = np.array(URM_train.indices, dtype=np.int32)
-        self.URM_train_indptr = np.array(URM_train.indptr, dtype=np.int32)
+        self.URM_train_indices = np.array(URM_train.indices, dtype=int)
+        self.URM_train_indptr = np.array(URM_train.indptr, dtype=int)
 
         self.batch_size = batch_size
-        self.batch_user = np.zeros(self.batch_size, dtype=np.int32)
-        self.batch_positive_item = np.zeros(self.batch_size, dtype=np.int32)
+        self.batch_user = np.zeros(self.batch_size, dtype=int)
+        self.batch_positive_item = np.zeros(self.batch_size, dtype=int)
 
         if self.n_negatives_per_positive == 1:
-            self.batch_negative_item = np.zeros(self.batch_size, dtype=np.int32)
+            self.batch_negative_item = np.zeros(self.batch_size, dtype=int)
         else:
-            self.batch_multiple_negative_item = np.zeros((self.batch_size, self.n_negatives_per_positive), dtype=np.int32)
+            self.batch_multiple_negative_item = np.zeros((self.batch_size, self.n_negatives_per_positive), dtype=int)
 
     def __len__(self):
         return math.ceil(self.n_samples_to_draw/self.batch_size)
@@ -310,13 +310,13 @@ cdef class BPRIterator:
 
 
         if self.n_negatives_per_positive == 1:
-            return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=np.int64)),\
-                   torch.from_numpy(np.array(self.batch_positive_item[:i_batch+1], dtype=np.int64)), \
-                   torch.from_numpy(np.array(self.batch_negative_item[:i_batch+1], dtype=np.int64))
+            return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=int)),\
+                   torch.from_numpy(np.array(self.batch_positive_item[:i_batch+1], dtype=int)), \
+                   torch.from_numpy(np.array(self.batch_negative_item[:i_batch+1], dtype=int))
         else:
-            return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=np.int64)),\
-                   torch.from_numpy(np.array(self.batch_positive_item[:i_batch+1], dtype=np.int64)), \
-                   torch.from_numpy(np.array(self.batch_multiple_negative_item[:i_batch+1,:], dtype=np.int64))
+            return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=int)),\
+                   torch.from_numpy(np.array(self.batch_positive_item[:i_batch+1], dtype=int)), \
+                   torch.from_numpy(np.array(self.batch_multiple_negative_item[:i_batch+1,:], dtype=int))
 
 
 
@@ -366,21 +366,21 @@ cdef class InteractionAndNegativeIterator:
 
         URM_train = sps.csr_matrix(URM_train)
         URM_train = URM_train.sorted_indices()
-        self.URM_train_indices = np.array(URM_train.indices, dtype=np.int32)
-        self.URM_train_indptr = np.array(URM_train.indptr, dtype=np.int32)
+        self.URM_train_indices = np.array(URM_train.indices, dtype=int)
+        self.URM_train_indptr = np.array(URM_train.indptr, dtype=int)
 
         URM_train = sps.coo_matrix(URM_train)
-        self.URM_train_row = np.array(URM_train.row, dtype=np.int32)
-        self.URM_train_col = np.array(URM_train.col, dtype=np.int32)
+        self.URM_train_row = np.array(URM_train.row, dtype=int)
+        self.URM_train_col = np.array(URM_train.col, dtype=int)
 
         self.batch_size = batch_size
-        self.batch_user = np.zeros(self.batch_size, dtype=np.int32)
-        self.batch_positive_item = np.zeros(self.batch_size, dtype=np.int32)
+        self.batch_user = np.zeros(self.batch_size, dtype=int)
+        self.batch_positive_item = np.zeros(self.batch_size, dtype=int)
 
         if self.n_negatives_per_positive == 1:
-            self.batch_negative_item = np.zeros(self.batch_size, dtype=np.int32)
+            self.batch_negative_item = np.zeros(self.batch_size, dtype=int)
         else:
-            self.batch_multiple_negative_item = np.zeros((self.batch_size, self.n_negatives_per_positive), dtype=np.int32)
+            self.batch_multiple_negative_item = np.zeros((self.batch_size, self.n_negatives_per_positive), dtype=int)
 
     def __len__(self):
         return math.ceil(self.n_samples_to_draw/self.batch_size)
@@ -439,11 +439,11 @@ cdef class InteractionAndNegativeIterator:
 
 
         if self.n_negatives_per_positive == 1:
-            return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=np.int64)),\
-                   torch.from_numpy(np.array(self.batch_positive_item[:i_batch+1], dtype=np.int64)), \
-                   torch.from_numpy(np.array(self.batch_negative_item[:i_batch+1], dtype=np.int64))
+            return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=int)),\
+                   torch.from_numpy(np.array(self.batch_positive_item[:i_batch+1], dtype=int)), \
+                   torch.from_numpy(np.array(self.batch_negative_item[:i_batch+1], dtype=int))
         else:
-            return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=np.int64)),\
-                   torch.from_numpy(np.array(self.batch_positive_item[:i_batch+1], dtype=np.int64)), \
-                   torch.from_numpy(np.array(self.batch_multiple_negative_item[:i_batch+1,:], dtype=np.int64))
+            return torch.from_numpy(np.array(self.batch_user[:i_batch+1], dtype=int)),\
+                   torch.from_numpy(np.array(self.batch_positive_item[:i_batch+1], dtype=int)), \
+                   torch.from_numpy(np.array(self.batch_multiple_negative_item[:i_batch+1,:], dtype=int))
 

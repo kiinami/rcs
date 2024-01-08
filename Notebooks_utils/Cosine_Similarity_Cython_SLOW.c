@@ -3105,8 +3105,8 @@ static PyObject *__pyx_pf_29Cosine_Similarity_Cython_SLOW_17Cosine_Similarity_8c
  *         # Data structure to incrementally build sparse matrix
  *         # Preinitialize max possible length
  *         values = np.zeros((self.n_items*self.TopK))             # <<<<<<<<<<<<<<
- *         rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
- *         cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
+ *         rows = np.zeros((self.n_items*self.TopK,), dtype=int)
+ *         cols = np.zeros((self.n_items*self.TopK,), dtype=int)
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -3143,8 +3143,8 @@ static PyObject *__pyx_pf_29Cosine_Similarity_Cython_SLOW_17Cosine_Similarity_8c
   /* "Cosine_Similarity_Cython_SLOW.pyx":110
  *         # Preinitialize max possible length
  *         values = np.zeros((self.n_items*self.TopK))
- *         rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)             # <<<<<<<<<<<<<<
- *         cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
+ *         rows = np.zeros((self.n_items*self.TopK,), dtype=int)             # <<<<<<<<<<<<<<
+ *         cols = np.zeros((self.n_items*self.TopK,), dtype=int)
  *         sparse_data_pointer = 0
  */
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
@@ -3189,8 +3189,8 @@ static PyObject *__pyx_pf_29Cosine_Similarity_Cython_SLOW_17Cosine_Similarity_8c
 
   /* "Cosine_Similarity_Cython_SLOW.pyx":111
  *         values = np.zeros((self.n_items*self.TopK))
- *         rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
- *         cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)             # <<<<<<<<<<<<<<
+ *         rows = np.zeros((self.n_items*self.TopK,), dtype=int)
+ *         cols = np.zeros((self.n_items*self.TopK,), dtype=int)             # <<<<<<<<<<<<<<
  *         sparse_data_pointer = 0
  * 
  */
@@ -3235,8 +3235,8 @@ static PyObject *__pyx_pf_29Cosine_Similarity_Cython_SLOW_17Cosine_Similarity_8c
   __pyx_t_1 = 0;
 
   /* "Cosine_Similarity_Cython_SLOW.pyx":112
- *         rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
- *         cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
+ *         rows = np.zeros((self.n_items*self.TopK,), dtype=int)
+ *         cols = np.zeros((self.n_items*self.TopK,), dtype=int)
  *         sparse_data_pointer = 0             # <<<<<<<<<<<<<<
  * 
  *         processedItems = 0
