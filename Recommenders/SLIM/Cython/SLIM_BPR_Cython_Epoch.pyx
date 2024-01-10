@@ -114,8 +114,8 @@ cdef class SLIM_BPR_Cython_Epoch:
         self.final_model_sparse_weights = final_model_sparse_weights
         self.symmetric = symmetric
 
-        self.URM_mask_indices = np.array(URM_mask.indices, dtype=int)
-        self.URM_mask_indptr = np.array(URM_mask.indptr, dtype=int)
+        self.URM_mask_indices = np.array(URM_mask.indices, dtype=np.int32)
+        self.URM_mask_indptr = np.array(URM_mask.indptr, dtype=np.int32)
 
 
         if self.train_with_sparse_weights:
