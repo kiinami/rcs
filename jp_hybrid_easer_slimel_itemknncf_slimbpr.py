@@ -4,11 +4,27 @@ import optuna
 from Recommenders.BaseRecommender import BaseRecommender
 import scipy.sparse as sps
 import numpy.linalg as LA
+from Recommenders.SLIM.SLIMElasticNetRecommender import SLIMElasticNetRecommender
 from Recommenders.KNN.ItemKNNCFRecommender import ItemKNNCFRecommender
+from Recommenders.EASE_R.EASE_R_Recommender import EASE_R_Recommender
 from Recommenders.SLIM.Cython.SLIM_BPR_Cython import SLIM_BPR_Cython
 
 data, usermap, itemmap, users = load_data2()
 data_train, data_val=split_data2(data, 0.2)
+
+easer_study = optuna.create_study(
+    study_name="Easer",
+    storage=get_database_url(),
+    load_if_exists=True,
+    direction="maximize",
+)
+
+slim_study = optuna.create_study(
+    study_name="SLIMElastic",
+    storage=get_database_url(),
+    load_if_exists=True,
+    direction="maximize",
+)
 
 itemknncf_study = optuna.create_study(
     study_name="ItemKNNCF",
@@ -24,8 +40,8 @@ slimbpr_study = optuna.create_study(
     direction="maximize",
 )
 
-itemknncf_slimbpr_study = optuna.create_study(
-    study_name="ItemKNNCF+SLIMBPR",
+hybrid_study = optuna.create_study(
+    study_name="Easer+SlimElastic+ItemKNNCF+SLIMBPR",
     storage=get_database_url(),
     load_if_exists=True,
     direction="maximize",
@@ -77,24 +93,36 @@ class DifferentLossScoresHybridRecommender(BaseRecommender):
         return item_weights
 
 
+easer_recommender = EASE_R_Recommender(data_train, verbose=False)
+easer_recommender.fit(**easer_study.best_params)
+
+slim_el_recommender = SLIMElasticNetRecommender(data_train, verbose=False)
+slim_el_recommender.fit(**slim_study.best_params)
+
 itemknncf_recommender = ItemKNNCFRecommender(data_train, verbose=False)
 itemknncf_recommender.fit(**itemknncf_study.best_params)
 
 slimbpr_recommender = SLIM_BPR_Cython(data_train, verbose=False)
 slimbpr_recommender.fit(**slimbpr_study.best_params)
 
+
 def objective(trial):
-    norm = trial.suggest_categorical("norm", [1, 2, np.inf, -np.inf, None])
+    norm1 = trial.suggest_categorical("norm", [1, 2, np.inf, -np.inf, None])
+    norm2 = trial.suggest_categorical("norm", [1, 2, np.inf, -np.inf, None])
+    norm3 = trial.suggest_categorical("norm", [1, 2, np.inf, -np.inf, None])
     alpha = trial.suggest_float("alpha", 0, 1)
+    beta = trial.suggest_float("beta", 0, 1)
+    gamma = trial.suggest_float("gamma", 0, 1)
 
-    recommender_object_2 = DifferentLossScoresHybridRecommender(data_train, itemknncf_recommender, slimbpr_recommender)
-    recommender_object_2.fit(
-        norm = norm, 
-        alpha = alpha
-    )
+    recommender_object_1 = DifferentLossScoresHybridRecommender(data_train, easer_recommender, slim_el_recommender)
+    recommender_object_1.fit(norm=norm1, alpha=alpha)
+    recommender_object_2 = DifferentLossScoresHybridRecommender(data_train, recommender_object_1, itemknncf_recommender)
+    recommender_object_2.fit(norm=norm2, alpha=beta)
+    recommender_object_3 = DifferentLossScoresHybridRecommender(data_train, recommender_object_2, slimbpr_recommender)
+    recommender_object_3.fit(norm=norm3, alpha=gamma)
 
-    _, _, ev_map, _, _ = evaluator(recommender_object_2, data_train, data_val)
+    _, _, ev_map, _, _ = evaluator(recommender_object_3, data_train, data_val)
     
     return ev_map
 
-itemknncf_slimbpr_study.optimize(objective, n_trials=500)
+hybrid_study.optimize(objective, n_trials=500)
