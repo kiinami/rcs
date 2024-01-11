@@ -161,7 +161,7 @@ def objective(trial):
     _, _, ev_map, _, _ = evaluator(scores_hybrid_recommender, data_train, data_val)
     return ev_map
 
-scores_hybrid_study.optimize(objective, n_trials=100)
+scores_hybrid_study.optimize(objective, n_trials=200)
 
 
 # In[ ]:
